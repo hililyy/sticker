@@ -33,7 +33,6 @@ final class StickerListCVCell: UICollectionViewCell {
     }
     
     func initConstraints() {
-        
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([

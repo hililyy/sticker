@@ -7,11 +7,25 @@
 
 import UIKit
 
-class MainViewController: UIViewController {
+final class MainViewController: UIViewController {
     
     let mainView = MainView()
     
     let imageViewStrings = ["birthday", "cake", "cat", "cow", "dog", "pie", "rabbit"]
+    
+    let stickerCount = 0
+    var selectedSticker: StickerView? {
+        didSet(newValue) {
+            if let sticker = newValue {
+                sticker.superview?.bringSubviewToFront(sticker)
+            }
+            for view in mainView.backgroundImageView.subviews {
+                if let sticker = view as? StickerView {
+                    sticker.setBorderView(isSelected: view == selectedSticker)
+                }
+            }
+        }
+    }
     
     override func loadView() {
         view = mainView
@@ -89,12 +103,28 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let img = UIImageView(image: UIImage(named: imageViewStrings[indexPath.row]))
-        let stickerView = StickerView(contentsView: img,
-                                      frame: CGRect(x: mainView.backgroundImageView.bounds.size.width / 2,
-                                                    y: mainView.backgroundImageView.bounds.size.height / 2,
-                                                    width: 50,
-                                                    height: 50))
+        let stickerView = StickerView(
+            contentsView: img,
+            frame: CGRect(x: mainView.backgroundImageView.bounds.size.width / 2,
+                          y: mainView.backgroundImageView.bounds.size.height / 2,
+                          width: 100,
+                          height: 100))
+        stickerView.tag = stickerCount + 1
         stickerView.parentVC = self
+        stickerView.delegate = self
+        stickerView.tag = 1
+        stickerView.deleteHandler = {
+            print("지움")
+            self.selectedSticker?.removeFromSuperview()
+        }
+        selectedSticker = stickerView
         mainView.backgroundImageView.addSubview(stickerView)
+        
+    }
+}
+
+extension MainViewController: StickerDelegate {
+    func tapSticker(stickerView: StickerView) {
+        selectedSticker = stickerView
     }
 }
