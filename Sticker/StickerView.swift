@@ -37,8 +37,8 @@ class StickerView: UIView {
     }
     
     @objc func drag(sender: UIPanGestureRecognizer) {
-        let parent = parentVC as! ViewController
-        let translation = sender.translation(in: parent.backgroundImageView)
+        let parent = parentVC as! MainViewController
+        let translation = sender.translation(in: parent.mainView.backgroundImageView)
         sender.view!.center = CGPoint(x: sender.view!.center.x + translation.x, y: sender.view!.center.y + translation.y)
         sender.setTranslation(.zero, in: self)
     }
