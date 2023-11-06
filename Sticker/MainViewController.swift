@@ -41,6 +41,7 @@ final class MainViewController: UIViewController {
         initView()
         initTarget()
         initDelegate()
+        initGesture()
     }
     
     func initView() {
@@ -55,12 +56,18 @@ final class MainViewController: UIViewController {
         mainView.stickerListCollectionView.delegate = self
         mainView.stickerListCollectionView.dataSource = self
     }
+    
+    func initGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        self.mainView.backgroundImageView.addGestureRecognizer(tapGesture)
+    }
 }
 
 extension MainViewController {
     @objc func mergeImage() {
         print(mainView.backgroundImageView.subviews.count)
         if mainView.backgroundImageView.subviews.count > 0 {
+            selectedSticker = nil
             if let image = mergeImages(imageView: mainView.backgroundImageView) {
                 UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
             } else {
@@ -79,12 +86,20 @@ extension MainViewController {
         return image
     }
     
-    //MARK: - Add image to Library
     @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
         if error != nil {
             print("오류댱")
         } else {
             print("저장됨")
+        }
+    }
+    @objc func handleTap(_ sender: UITapGestureRecognizer) {
+        let location = sender.location(in: self.view)
+        for view in mainView.backgroundImageView.subviews {
+            if !view.frame.contains(location) {
+                print("없어짐")
+                selectedSticker = nil
+            }
         }
     }
 }
@@ -124,7 +139,7 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
 }
 
 extension MainViewController: StickerDelegate {
-    func tapSticker(stickerView: StickerView) {
+    func selectSticker(stickerView: StickerView) {
         selectedSticker = stickerView
     }
 }

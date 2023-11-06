@@ -83,12 +83,13 @@ final class StickerView: UIView {
         let translation = sender.translation(in: parent.mainView.backgroundImageView)
         sender.view!.center = CGPoint(x: sender.view!.center.x + translation.x, y: sender.view!.center.y + translation.y)
         sender.setTranslation(.zero, in: self)
+        
+        delegate?.selectSticker(stickerView: self)
     }
     
     @objc func tap() {
         print("탭")
-        delegate?.tapSticker(stickerView: self)
-        
+        delegate?.selectSticker(stickerView: self)
     }
     
     func initConstraints() {
@@ -99,8 +100,6 @@ final class StickerView: UIView {
         
         contentBorderView.translatesAutoresizingMaskIntoConstraints = false
         contentsView.translatesAutoresizingMaskIntoConstraints = false
-//        rotationButton.translatesAutoresizingMaskIntoConstraints = false
-//        deleteButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             contentBorderView.topAnchor.constraint(equalTo: contentsView.topAnchor),
@@ -112,14 +111,11 @@ final class StickerView: UIView {
             contentsView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             contentsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12),
             contentsView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
-            
-//            rotationButton.widthAnchor.constraint(equalToConstant: 24),
-//            rotationButton.heightAnchor.constraint(equalToConstant: 24),
         ])
     }
 }
 
 
 protocol StickerDelegate {
-    func tapSticker(stickerView: StickerView)
+    func selectSticker(stickerView: StickerView)
 }
