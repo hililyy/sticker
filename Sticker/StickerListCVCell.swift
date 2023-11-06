@@ -28,11 +28,11 @@ final class StickerListCVCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func initSubviews() {
+    private func initSubviews() {
         contentView.addSubview(imageView)
     }
     
-    func initConstraints() {
+    private func initConstraints() {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([

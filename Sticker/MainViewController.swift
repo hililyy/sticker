@@ -11,9 +11,9 @@ final class MainViewController: UIViewController {
     
     let mainView = MainView()
     
-    let imageViewStrings = ["birthday", "cake", "cat", "cow", "dog", "pie", "rabbit"]
+    private let imageViewStrings = ["birthday", "cake", "cat", "cow", "dog", "pie", "rabbit"]
     
-    var selectedSticker: StickerView? {
+    private var selectedSticker: StickerView? {
         didSet(newValue) {
             if let sticker = newValue {
                 sticker.superview?.bringSubviewToFront(sticker)
@@ -37,48 +37,50 @@ final class MainViewController: UIViewController {
         initalize()
     }
     
-    func initalize() {
+    private func initalize() {
         initView()
         initTarget()
         initDelegate()
         initGesture()
     }
     
-    func initView() {
+    private func initView() {
         view.backgroundColor = .white
     }
     
-    func initTarget() {
+    private func initTarget() {
         mainView.saveButton.addTarget(self,
                                       action: #selector(mergeImage),
                                       for: .touchUpInside)
     }
     
-    func initDelegate() {
+    private func initDelegate() {
         mainView.stickerListCollectionView.delegate = self
         mainView.stickerListCollectionView.dataSource = self
     }
     
-    func initGesture() {
+    private func initGesture() {
         let tapGesture = UITapGestureRecognizer(target: self,
                                                 action: #selector(handleTap(_:)))
-        self.mainView.backgroundImageView.addGestureRecognizer(tapGesture)
+        mainView.backgroundImageView.addGestureRecognizer(tapGesture)
     }
 }
 
 extension MainViewController {
-    @objc func mergeImage() {
+    @objc private func mergeImage() {
         if mainView.backgroundImageView.subviews.count > 0 {
             selectedSticker = nil
             if let image = mergeImages(imageView: mainView.backgroundImageView) {
-                UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+                UIImageWriteToSavedPhotosAlbum(image,
+                                               self,
+                                               #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
             }
         } else {
             print("스티커 사용 안댐")
         }
     }
     
-    func mergeImages(imageView: UIImageView) -> UIImage? {
+    private func mergeImages(imageView: UIImageView) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(imageView.frame.size, false, 0.0)
         imageView.superview!.layer.render(in: UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
@@ -86,14 +88,15 @@ extension MainViewController {
         return image
     }
     
-    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+    @objc private func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
         if error != nil {
             print("오류댱")
         } else {
             print("저장됨")
         }
     }
-    @objc func handleTap(_ sender: UITapGestureRecognizer) {
+    
+    @objc private func handleTap(_ sender: UITapGestureRecognizer) {
         let location = sender.location(in: self.view)
         for view in mainView.backgroundImageView.subviews {
             if !view.frame.contains(location) {
@@ -102,7 +105,6 @@ extension MainViewController {
         }
     }
 }
-
 
 extension MainViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

@@ -18,7 +18,7 @@ final class MainView: UIView {
         return button
     }()
     
-    let contentView = UIView()
+    private let contentView = UIView()
     
     let backgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "image"))
@@ -26,7 +26,7 @@ final class MainView: UIView {
         return imageView
     }()
     
-    var bottomView = UIView()
+    private var bottomView = UIView()
     lazy var stickerListCollectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: self.flowLayout)
         view.isScrollEnabled = true
@@ -57,7 +57,7 @@ final class MainView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func initSubView() {
+    private func initSubView() {
         addSubview(saveButton)
         addSubview(contentView)
         contentView.addSubview(backgroundImageView)
@@ -65,7 +65,7 @@ final class MainView: UIView {
         bottomView.addSubview(stickerListCollectionView)
     }
     
-    func initConstraints() {
+    private func initConstraints() {
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
         stickerListCollectionView.translatesAutoresizingMaskIntoConstraints = false

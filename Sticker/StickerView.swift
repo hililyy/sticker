@@ -92,10 +92,10 @@ final class StickerView: UIView {
             
         case .began:
             deltaAngle = CGFloat(atan2f(Float(touchLocation.y - center.y),
-                                        Float(touchLocation.x - center.x))) - CGAffineTransformGetAngle(transform)
+                                        Float(touchLocation.x - center.x))) - getAngle(transform)
             initialBounds = bounds
-            initialDistance = CGPointGetDistance(point1: center,
-                                                 point2: touchLocation)
+            initialDistance = getDistance(point1: center,
+                                          point2: touchLocation)
             
         case .changed:
             let angle = atan2f(Float(touchLocation.y - center.y),
@@ -103,12 +103,12 @@ final class StickerView: UIView {
             let angleDiff = Float(deltaAngle) - angle // 초기 각도와 현재 각도의 차이 계산
             transform = CGAffineTransform(rotationAngle: CGFloat(-angleDiff))
             
-            var scale = CGPointGetDistance(point1: center,
-                                           point2: touchLocation) / initialDistance
+            var scale = getDistance(point1: center,
+                                    point2: touchLocation) / initialDistance
             let minimumScale = CGFloat(minimumSize) / min(initialBounds.size.width,
-                                                          initialBounds.size.height) // 최소 크기 제한
+                                                          initialBounds.size.height)
             scale = max(scale, minimumScale)
-            let scaledBounds = CGRectScale(initialBounds,
+            let scaledBounds = getNewScale(initialBounds,
                                            wScale: scale,
                                            hScale: scale)
             
@@ -131,12 +131,12 @@ final class StickerView: UIView {
     
     
     // 회전 각도 추출
-    private func CGAffineTransformGetAngle(_ t:CGAffineTransform) -> CGFloat {
+    private func getAngle(_ t: CGAffineTransform) -> CGFloat {
         return atan2(t.b, t.a)
     }
     
-    // 가로, 세로 스케일 조절
-    private func CGRectScale(_ rect:CGRect, wScale:CGFloat, hScale:CGFloat) -> CGRect {
+    // 터치 이벤트에 따른 이미지 스케일 계산
+    private func getNewScale(_ rect:CGRect, wScale:CGFloat, hScale:CGFloat) -> CGRect {
         return CGRect(x: rect.origin.x,
                       y: rect.origin.y,
                       width: rect.size.width * wScale,
@@ -144,7 +144,7 @@ final class StickerView: UIView {
     }
     
     // 두개의 지정 거리 계산 (피타고라스)
-    private func CGPointGetDistance(point1:CGPoint, point2:CGPoint) -> CGFloat {
+    private func getDistance(point1:CGPoint, point2:CGPoint) -> CGFloat {
         let fx = point2.x - point1.x
         let fy = point2.y - point1.y
         return sqrt(fx * fx + fy * fy)
