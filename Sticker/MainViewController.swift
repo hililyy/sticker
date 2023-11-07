@@ -135,11 +135,23 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
         selectedSticker = stickerView
         mainView.backgroundImageView.addSubview(stickerView)
+        initAnimation(view: stickerView)
     }
 }
 
 extension MainViewController: StickerDelegate {
     func selectSticker(stickerView: StickerView) {
         selectedSticker = stickerView
+    }
+}
+
+extension MainViewController {
+    func initAnimation(view: UIView) {
+        let animation = CABasicAnimation(keyPath: "transform.scale")
+        animation.fromValue = 0.8 // 시작 스케일
+        animation.toValue = 1.0 // 최종 스케일
+        animation.duration = 0.1
+        
+        view.layer.add(animation, forKey: "scaleAnimation")
     }
 }
