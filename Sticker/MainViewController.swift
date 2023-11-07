@@ -92,7 +92,7 @@ extension MainViewController {
         if error != nil {
             print("오류댱")
         } else {
-            print("저장됨")
+            toast()
         }
     }
     
@@ -146,12 +146,42 @@ extension MainViewController: StickerDelegate {
 }
 
 extension MainViewController {
-    func initAnimation(view: UIView) {
+    private func initAnimation(view: UIView) {
         let animation = CABasicAnimation(keyPath: "transform.scale")
         animation.fromValue = 0.8 // 시작 스케일
         animation.toValue = 1.0 // 최종 스케일
         animation.duration = 0.1
         
         view.layer.add(animation, forKey: "scaleAnimation")
+    }
+    
+    private func toast() {
+        let toastLabelWidth: CGFloat = 300
+        let toastLabelHeight: CGFloat = 50
+        let toastLabelX = (view.frame.size.width - toastLabelWidth) / 2
+        let toastLabelY: CGFloat = view.frame.size.height - 100
+        
+        let toastLabel = UILabel(frame: CGRect(x: toastLabelX,
+                                               y: toastLabelY,
+                                               width: toastLabelWidth,
+                                               height: toastLabelHeight))
+        toastLabel.backgroundColor = .systemTeal
+        toastLabel.textColor = .white
+        toastLabel.textAlignment = .center
+        toastLabel.text = "저장됐슴"
+        toastLabel.alpha = 1.0
+        toastLabel.layer.cornerRadius = 15
+        toastLabel.clipsToBounds = true
+        
+        view.addSubview(toastLabel)
+        
+        UIView.animate(withDuration: 0.5,
+                       delay: 1.5,
+                       options: .curveEaseOut,
+                       animations: {
+            toastLabel.alpha = 0.0
+        }, completion: { _ in
+            toastLabel.removeFromSuperview()
+        })
     }
 }
