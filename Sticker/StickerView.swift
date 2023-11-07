@@ -49,8 +49,8 @@ final class StickerView: UIView {
     private var initialDistance: CGFloat = 0 // 초기 터치 위치와 뷰의 중심 사이의 거리
     private var deltaAngle: CGFloat = 0 // 현재 뷰의 회전 각도와 제스처의 각도 차이
     
-    convenience init(contentsView: UIView, frame: CGRect) {
-        self.init(frame: frame)
+    convenience init(contentsView: UIView) {
+        self.init()
         self.contentsView = contentsView
         
         initalize()
@@ -64,8 +64,6 @@ final class StickerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var deleteHandler: () -> () = {}
-    
     func setBorderView(isSelected: Bool) {
         contentBorderView.layer.borderColor = isSelected ? UIColor.white.cgColor : UIColor.clear.cgColor
         deleteButton.isHidden = !isSelected
@@ -73,7 +71,8 @@ final class StickerView: UIView {
     }
     
     @objc private func deleteImage(sender: UIButton) {
-        deleteHandler()
+        let parent = parentVC as! MainViewController
+        parent.selectedSticker?.removeFromSuperview()
     }
     
     @objc private func drag(sender: UIPanGestureRecognizer) {
@@ -227,6 +226,13 @@ extension StickerView {
         defaultMaximumSize = 500
         minimumSize = defaultMinimumSize
         maximumSize = defaultMaximumSize
+        
+        guard let parent = parentVC as? MainViewController else { return }
+        
+        frame = CGRect(x: (parent.mainView.backgroundImageView.frame.width / 2) - (initImageWidth / 2),
+                       y: (parent.mainView.backgroundImageView.frame.height / 2) - (initImageHeight / 2),
+                       width: initImageWidth,
+                       height: initImageHeight)
         
         deleteButton.frame = CGRect(x: initImageWidth - iconButtonLength,
                                     y: 0,

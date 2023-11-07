@@ -18,6 +18,15 @@ final class MainView: UIView {
         return button
     }()
     
+    let selectPhotoButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("사진 선택", for: .normal)
+        button.backgroundColor = .systemIndigo
+        button.layer.cornerRadius = 5
+        button.setTitleColor(.white, for: .normal)
+        return button
+    }()
+    
     private let contentView = UIView()
     
     let backgroundImageView: UIImageView = {
@@ -59,6 +68,7 @@ final class MainView: UIView {
     
     private func initSubView() {
         addSubview(saveButton)
+        addSubview(selectPhotoButton)
         addSubview(contentView)
         contentView.addSubview(backgroundImageView)
         addSubview(bottomView)
@@ -67,18 +77,24 @@ final class MainView: UIView {
     
     private func initConstraints() {
         saveButton.translatesAutoresizingMaskIntoConstraints = false
+        selectPhotoButton.translatesAutoresizingMaskIntoConstraints = false
         backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
         stickerListCollectionView.translatesAutoresizingMaskIntoConstraints = false
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            saveButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant:
-                                                0),
+            saveButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
             saveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 50),
-            saveButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -50),
             saveButton.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: -20),
+            saveButton.widthAnchor.constraint(equalTo: selectPhotoButton.widthAnchor),
             saveButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            selectPhotoButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
+            selectPhotoButton.leadingAnchor.constraint(equalTo: saveButton.trailingAnchor, constant: 50),
+            selectPhotoButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -50),
+            selectPhotoButton.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: -20),
+            selectPhotoButton.heightAnchor.constraint(equalToConstant: 40),
             
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
