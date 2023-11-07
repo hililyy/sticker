@@ -14,8 +14,8 @@ final class MainViewController: UIViewController {
     private let imageViewStrings = ["birthday", "cake", "cat", "cow", "dog", "pie", "rabbit"]
     
     private var selectedSticker: StickerView? {
-        didSet(newValue) {
-            if let sticker = newValue {
+        didSet(oldValue) {
+            if let sticker = oldValue {
                 sticker.superview?.bringSubviewToFront(sticker)
             }
             

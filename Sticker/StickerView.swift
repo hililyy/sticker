@@ -30,12 +30,18 @@ final class StickerView: UIView {
     var initImageHeight: CGFloat = 0
     private var iconButtonLength: CGFloat = 48
     
-    private var defaultInset: Int = 0
     private var defaultMinimumSize: Int = 0
+    private var defaultMaximumSize: Int = 0
     
     private var minimumSize: Int = 0 {
-        didSet(newValue) {
-            minimumSize = max(newValue, defaultMinimumSize)
+        willSet(newValue) {
+            self.minimumSize = max(newValue, defaultMinimumSize)
+        }
+    }
+    
+    private var maximumSize: Int = 0 {
+        willSet(newValue) {
+            self.maximumSize = min(newValue, defaultMaximumSize)
         }
     }
     
@@ -106,12 +112,14 @@ final class StickerView: UIView {
             var scale = getDistance(point1: center,
                                     point2: touchLocation) / initialDistance
             let minimumScale = CGFloat(minimumSize) / min(initialBounds.size.width,
+                                                        initialBounds.size.height)
+            let maximumScale = CGFloat(maximumSize) / max(initialBounds.size.width,
                                                           initialBounds.size.height)
-            scale = max(scale, minimumScale)
-            let scaledBounds = getNewScale(initialBounds,
+            scale = min(max(scale, minimumScale), maximumScale)
+            
+            let scaledBounds = getNewSize(initialBounds,
                                            wScale: scale,
                                            hScale: scale)
-            
             deleteButton.frame = CGRect(x: scaledBounds.width - iconButtonLength,
                                         y: 0,
                                         width: iconButtonLength,
@@ -135,21 +143,23 @@ final class StickerView: UIView {
         return atan2(t.b, t.a)
     }
     
-    // 터치 이벤트에 따른 이미지 스케일 계산
-    private func getNewScale(_ rect:CGRect, wScale:CGFloat, hScale:CGFloat) -> CGRect {
+    // 터치 이벤트에 따른 이미지 크기 계산
+    private func getNewSize(_ rect:CGRect, wScale:CGFloat, hScale:CGFloat) -> CGRect {
         return CGRect(x: rect.origin.x,
                       y: rect.origin.y,
                       width: rect.size.width * wScale,
                       height: rect.size.height * hScale)
     }
     
-    // 두개의 지정 거리 계산 (피타고라스)
+    // 두 점 사이의 거리 (피타고라스)
     private func getDistance(point1:CGPoint, point2:CGPoint) -> CGFloat {
         let fx = point2.x - point1.x
         let fy = point2.y - point1.y
         return sqrt(fx * fx + fy * fy)
     }
 }
+
+// MARK: - UI
 
 extension StickerView {
     private func initalize() {
@@ -213,9 +223,10 @@ extension StickerView {
     }
     
     func initFrame() {
-        defaultInset = 11
-        defaultMinimumSize = 4 * defaultInset
+        defaultMinimumSize = 80
+        defaultMaximumSize = 500
         minimumSize = defaultMinimumSize
+        maximumSize = defaultMaximumSize
         
         deleteButton.frame = CGRect(x: initImageWidth - iconButtonLength,
                                     y: 0,
