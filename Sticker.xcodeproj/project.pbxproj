@@ -15,6 +15,7 @@
 		022CB9952AEF7B260055CABA /* StickerListCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022CB9942AEF7B260055CABA /* StickerListCVCell.swift */; };
 		022CB9972AEF805C0055CABA /* StickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022CB9962AEF805C0055CABA /* StickerView.swift */; };
 		023F1A432AF8A68100A16D89 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023F1A422AF8A68100A16D89 /* MainView.swift */; };
+		023F1A452AFA073700A16D89 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023F1A442AFA073700A16D89 /* Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		022CB9942AEF7B260055CABA /* StickerListCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerListCVCell.swift; sourceTree = "<group>"; };
 		022CB9962AEF805C0055CABA /* StickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerView.swift; sourceTree = "<group>"; };
 		023F1A422AF8A68100A16D89 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		023F1A442AFA073700A16D89 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 				022CB9892AEF73D80055CABA /* Assets.xcassets */,
 				022CB98B2AEF73D80055CABA /* LaunchScreen.storyboard */,
 				022CB98E2AEF73D80055CABA /* Info.plist */,
+				023F1A442AFA073700A16D89 /* Extension.swift */,
 			);
 			path = Sticker;
 			sourceTree = "<group>";
@@ -145,6 +148,7 @@
 			files = (
 				022CB9952AEF7B260055CABA /* StickerListCVCell.swift in Sources */,
 				023F1A432AF8A68100A16D89 /* MainView.swift in Sources */,
+				023F1A452AFA073700A16D89 /* Extension.swift in Sources */,
 				022CB9972AEF805C0055CABA /* StickerView.swift in Sources */,
 				022CB9852AEF73D70055CABA /* MainViewController.swift in Sources */,
 				022CB9812AEF73D70055CABA /* AppDelegate.swift in Sources */,

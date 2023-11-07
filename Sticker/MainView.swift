@@ -36,6 +36,7 @@ final class MainView: UIView {
     }()
     
     private var bottomView = UIView()
+    
     lazy var stickerListCollectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: self.flowLayout)
         view.isScrollEnabled = true
@@ -58,12 +59,18 @@ final class MainView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        initUI()
         initSubView()
         initConstraints()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func initUI() {
+        backgroundColor = .white
     }
     
     private func initSubView() {
