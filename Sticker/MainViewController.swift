@@ -66,6 +66,23 @@ final class MainViewController: UIViewController {
             }
         }
     }
+    
+    @objc func openTextField() {
+        let vc = TextFieldPopupVC()
+        vc.modalTransitionStyle = .crossDissolve
+        vc.modalPresentationStyle = .overFullScreen
+        vc.completeHandler = { text in
+            let textView = UITextView()
+            textView.text = text
+            textView.backgroundColor = UIColor.clear
+            textView.font = .systemFont(ofSize: 500)
+            textView.sizeToFit()
+            let labelImage = UIImageView(image: textView.convertToImage())
+            self.addStickerView(contentView: labelImage)
+            
+        }
+        present(vc, animated: true)
+    }
 }
 
 // MARK: - Initalize
@@ -84,6 +101,10 @@ extension MainViewController {
         mainView.selectPhotoButton.addTarget(self,
                                              action: #selector(openPhotoAlbum),
                                              for: .touchUpInside)
+        
+        mainView.inputTextButton.addTarget(self,
+                                           action: #selector(openTextField),
+                                           for: .touchUpInside)
     }
     
     private func initDelegate() {
@@ -96,6 +117,25 @@ extension MainViewController {
         let tapGesture = UITapGestureRecognizer(target: self,
                                                 action: #selector(tap(_:)))
         mainView.backgroundImageView.addGestureRecognizer(tapGesture)
+    }
+    
+    private func addStickerView(contentView: UIView) {
+        let stickerView = StickerView(contentsView: contentView)
+        
+        if contentView.frame.width > contentView.frame.height {
+            stickerView.initImageWidth = contentView.frame.width * 150 / contentView.frame.height
+            stickerView.initImageHeight = 150
+        } else {
+            stickerView.initImageWidth = 100
+            stickerView.initImageHeight = contentView.frame.height * 100 / contentView.frame.width
+        }
+        
+        stickerView.parentVC = self
+        stickerView.delegate = self
+        selectedSticker = stickerView
+        stickerView.initFrame()
+        mainView.backgroundImageView.addSubview(stickerView)
+        initAnimation(view: stickerView)
     }
 }
 
@@ -113,15 +153,7 @@ extension MainViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let img = UIImageView(image: UIImage(named: imageViewStrings[indexPath.row]))
-        let stickerView = StickerView(contentsView: img)
-        stickerView.initImageWidth = 100
-        stickerView.initImageHeight = img.frame.height * 100 / img.frame.width
-        stickerView.parentVC = self
-        stickerView.delegate = self
-        selectedSticker = stickerView
-        mainView.backgroundImageView.addSubview(stickerView)
-        stickerView.initFrame()
-        initAnimation(view: stickerView)
+        addStickerView(contentView: img)
     }
 }
 
@@ -179,15 +211,7 @@ extension MainViewController: UIImagePickerControllerDelegate, UINavigationContr
     func imagePickerController( _ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let selectedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             let img = UIImageView(image: selectedImage)
-            let stickerView = StickerView(contentsView: img)
-            stickerView.initImageWidth = 100
-            stickerView.initImageHeight = img.frame.height * 100 / img.frame.width
-            stickerView.parentVC = self
-            stickerView.delegate = self
-            selectedSticker = stickerView
-            mainView.backgroundImageView.addSubview(stickerView)
-            stickerView.initFrame()
-            initAnimation(view: stickerView)
+            addStickerView(contentView: img)
         }
         
         dismiss(animated: true)

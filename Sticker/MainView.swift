@@ -21,10 +21,74 @@ final class MainView: UIView {
     let selectPhotoButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("사진 선택", for: .normal)
+        button.titleLabel?.minimumScaleFactor = 0.5
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
         button.backgroundColor = .systemIndigo
         button.layer.cornerRadius = 5
         button.setTitleColor(.white, for: .normal)
         return button
+    }()
+    
+    let inputTextButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("텍스트", for: .normal)
+        button.titleLabel?.minimumScaleFactor = 0.5
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.backgroundColor = .purple
+        button.layer.cornerRadius = 5
+        button.setTitleColor(.white, for: .normal)
+        return button
+    }()
+    
+    let frontLayerButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("앞", for: .normal)
+        button.backgroundColor = .yellow
+        button.layer.cornerRadius = 5
+        button.setTitleColor(.darkGray, for: .normal)
+        return button
+    }()
+    
+    let backLayerButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("뒤", for: .normal)
+        button.backgroundColor = .systemTeal
+        button.layer.cornerRadius = 5
+        button.setTitleColor(.white, for: .normal)
+        return button
+    }()
+    
+    let topLayerButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("젤앞", for: .normal)
+        button.backgroundColor = .systemPink
+        button.layer.cornerRadius = 5
+        button.setTitleColor(.white, for: .normal)
+        return button
+    }()
+    
+    let bottomLayerButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("젤뒤", for: .normal)
+        button.backgroundColor = .systemGreen
+        button.layer.cornerRadius = 5
+        button.setTitleColor(.white, for: .normal)
+        return button
+    }()
+    
+    lazy var buttonStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [saveButton,
+                                                       selectPhotoButton,
+                                                       inputTextButton,
+                                                       frontLayerButton,
+                                                       backLayerButton,
+                                                       topLayerButton,
+                                                       bottomLayerButton])
+        stackView.spacing = 10
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.alignment = .fill
+        return stackView
     }()
     
     private let contentView = UIView()
@@ -74,8 +138,7 @@ final class MainView: UIView {
     }
     
     private func initSubView() {
-        addSubview(saveButton)
-        addSubview(selectPhotoButton)
+        addSubview(buttonStackView)
         addSubview(contentView)
         contentView.addSubview(backgroundImageView)
         addSubview(bottomView)
@@ -83,7 +146,7 @@ final class MainView: UIView {
     }
     
     private func initConstraints() {
-        saveButton.translatesAutoresizingMaskIntoConstraints = false
+        buttonStackView.translatesAutoresizingMaskIntoConstraints = false
         selectPhotoButton.translatesAutoresizingMaskIntoConstraints = false
         backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
         stickerListCollectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -91,17 +154,11 @@ final class MainView: UIView {
         contentView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            saveButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
-            saveButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 50),
-            saveButton.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: -20),
-            saveButton.widthAnchor.constraint(equalTo: selectPhotoButton.widthAnchor),
-            saveButton.heightAnchor.constraint(equalToConstant: 40),
-            
-            selectPhotoButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
-            selectPhotoButton.leadingAnchor.constraint(equalTo: saveButton.trailingAnchor, constant: 50),
-            selectPhotoButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -50),
-            selectPhotoButton.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: -20),
-            selectPhotoButton.heightAnchor.constraint(equalToConstant: 40),
+            buttonStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
+            buttonStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
+            buttonStackView.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: -20),
+            buttonStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            buttonStackView.heightAnchor.constraint(equalToConstant: 40),
             
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),

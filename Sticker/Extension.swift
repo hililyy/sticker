@@ -24,3 +24,19 @@ extension UIImage {
         completion()
     }
 }
+
+extension UIView {
+    func convertToImage() -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0.0)
+        defer {
+            UIGraphicsEndImageContext()
+        }
+        if let context = UIGraphicsGetCurrentContext() {
+            context.setFillColor(UIColor.clear.cgColor)
+            context.fill(self.bounds)
+            layer.render(in: context)
+            return UIGraphicsGetImageFromCurrentImageContext()
+        }
+        return nil
+    }
+}

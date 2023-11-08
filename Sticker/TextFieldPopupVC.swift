@@ -32,11 +32,9 @@ final class TextFieldPopupVC: UIViewController {
         guard let contents = textFieldPopupView.contentsTextView.text else { return }
         
         if !contents.isEmpty {
-//            dismissVC {
-//                self.completeHandler(contents)
-////                self.viewModel?.setSuggestData(contents: contents)
-////                self.viewModel?.getSuggestDatas()
-//            }
+            dismiss(animated: true) {
+                self.completeHandler(contents)
+            }
         }
     }
 }
