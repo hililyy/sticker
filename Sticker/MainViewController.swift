@@ -32,9 +32,9 @@ final class MainViewController: UIViewController {
     }
     
     private func resetSelectedStickerUI(selectedSticker: StickerView?) {
-        if let sticker = selectedSticker {
-            sticker.superview?.bringSubviewToFront(sticker)
-        }
+//        if let sticker = selectedSticker {
+//            sticker.superview?.bringSubviewToFront(sticker)
+//        }
         
         for view in mainView.backgroundImageView.subviews {
             if let sticker = view as? StickerView {
@@ -94,6 +94,34 @@ final class MainViewController: UIViewController {
         label.sizeToFit()
         return label
     }
+    
+    @objc private func movefrontLayer() {
+        if let sticker = selectedSticker {
+            if let index = sticker.superview?.subviews.firstIndex(of: sticker) {
+                sticker.superview?.insertSubview(sticker, at: index + 1)
+            }
+        }
+    }
+    
+    @objc private func movebackLayer() {
+        if let sticker = selectedSticker {
+            if let index = sticker.superview?.subviews.firstIndex(of: sticker) {
+                sticker.superview?.insertSubview(sticker, at: index - 1)
+            }
+        }
+    }
+    
+    @objc private func moveTopLayer() {
+        if let sticker = selectedSticker {
+            sticker.superview?.bringSubviewToFront(sticker)
+        }
+    }
+    
+    @objc private func moveBottomLayer() {
+        if let sticker = selectedSticker {
+            sticker.superview?.sendSubviewToBack(sticker)
+        }
+    }
 }
 
 // MARK: - Initalize
@@ -116,6 +144,22 @@ extension MainViewController {
         mainView.inputTextButton.addTarget(self,
                                            action: #selector(openTextField),
                                            for: .touchUpInside)
+        
+        mainView.frontLayerButton.addTarget(self,
+                                          action: #selector(movefrontLayer),
+                                          for: .touchUpInside)
+        
+        mainView.backLayerButton.addTarget(self,
+                                          action: #selector(movebackLayer),
+                                          for: .touchUpInside)
+        
+        mainView.topLayerButton.addTarget(self,
+                                          action: #selector(moveTopLayer),
+                                          for: .touchUpInside)
+        
+        mainView.bottomLayerButton.addTarget(self,
+                                          action: #selector(moveBottomLayer),
+                                          for: .touchUpInside)
     }
     
     private func initDelegate() {
