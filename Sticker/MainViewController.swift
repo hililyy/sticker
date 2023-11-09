@@ -188,10 +188,10 @@ extension MainViewController {
         stickerView.parentVC = self
         stickerView.delegate = self
         
-        stickerView.initFrame()
         mainView.backgroundImageView.addSubview(stickerView)
         initAnimation(view: stickerView)
         
+        stickerView.initFrame()
         selectedSticker = stickerView
     }
     

@@ -20,9 +20,16 @@ final class StickerView: UIView {
     }()
 
     private var deleteButton = UIButton(type: .custom)
+    private var resizeButton = UIButton(type: .custom)
+    private var topLeftButton = UIButton(type: .custom)
+    private var bottomLeftButton = UIButton(type: .custom)
     private var rotationButton = UIButton(type: .custom)
+    
     private var deleteImageView = UIImageView(image: UIImage(named: "icX"))
-    private var rotationImageView = UIImageView(image: UIImage(named: "icTwoArrow"))
+    private var resizeImageView = UIImageView(image: UIImage(named: "icTwoArrow"))
+    private var topLeftImageView = UIImageView(image: UIImage(named: "icArrowLeftTop"))
+    private var bottomLeftImageView = UIImageView(image: UIImage(named: "icArrowLeftBottom"))
+    private var rotationImageView = UIImageView(image: UIImage(named: "icRotate"))
     
     weak var parentVC: UIViewController?
     var delegate: StickerDelegate?
@@ -68,6 +75,9 @@ final class StickerView: UIView {
     func setBorderView(isSelected: Bool) {
         contentBorderView.layer.borderColor = isSelected ? UIColor.white.cgColor : UIColor.clear.cgColor
         deleteButton.isHidden = !isSelected
+        resizeButton.isHidden = !isSelected
+        topLeftButton.isHidden = !isSelected
+        bottomLeftButton.isHidden = !isSelected
         rotationButton.isHidden = !isSelected
     }
     
@@ -78,6 +88,7 @@ final class StickerView: UIView {
     
     @objc private func drag(_ recognizer: UIPanGestureRecognizer) {
         guard let parent = parentVC as? MainViewController else { return }
+        
         let translation = recognizer.translation(in: parent.mainView.backgroundImageView)
         recognizer.view?.center = CGPoint(x: (recognizer.view?.center.x ?? 0) + translation.x,
                                           y: (recognizer.view?.center.y ?? 0) + translation.y)
@@ -120,16 +131,8 @@ final class StickerView: UIView {
             let scaledBounds = getNewSize(initialBounds,
                                           wScale: scale,
                                           hScale: scale)
+            setupIconButtonFrame(size: contentBorderView.frame.size)
             
-            deleteButton.frame = CGRect(x: contentBorderView.frame.origin.x + contentBorderView.frame.width - (iconButtonLength / 2),
-                                        y: 0,
-                                        width: iconButtonLength,
-                                        height: iconButtonLength)
-            
-            rotationButton.frame = CGRect(x: contentBorderView.frame.width,
-                                          y: contentBorderView.frame.height,
-                                          width: iconButtonLength,
-                                          height: iconButtonLength)
             bounds = scaledBounds
             setNeedsDisplay()
             
@@ -138,6 +141,63 @@ final class StickerView: UIView {
         }
     }
     
+    @objc private func resize(_ recognizer: UIPanGestureRecognizer) {
+        let touchLocation = recognizer.location(in: superview) // 터치 위치 가져옴
+        let center = self.center // 현재 뷰의 중심 위치
+        
+        switch recognizer.state {
+            
+        case .began:
+            initialBounds = bounds
+            initialDistance = getDistance(point1: center,
+                                          point2: touchLocation)
+            
+        case .changed:
+            var scale = getDistance(point1: center,
+                                    point2: touchLocation) / initialDistance
+            let minimumScale = CGFloat(minimumSize) / min(initialBounds.size.width,
+                                                          initialBounds.size.height)
+            let maximumScale = CGFloat(maximumSize) / max(initialBounds.size.width,
+                                                          initialBounds.size.height)
+            scale = min(max(scale, minimumScale), maximumScale)
+            
+            let scaledBounds = getNewSize(initialBounds,
+                                          wScale: scale,
+                                          hScale: scale)
+            
+            setupIconButtonFrame(size: contentBorderView.frame.size)
+            
+            bounds = scaledBounds
+            setNeedsDisplay()
+            
+        default:
+            break
+        }
+    }
+    
+    @objc func rotation(_ recognizer: UIRotationGestureRecognizer) {
+        let touchLocation = recognizer.location(in: superview) // 터치 위치 가져옴
+        let center = self.center // 현재 뷰의 중심 위치
+        
+        switch recognizer.state {
+            
+        case .began:
+            deltaAngle = CGFloat(atan2f(Float(touchLocation.y - center.y),
+                                        Float(touchLocation.x - center.x))) - getAngle(transform)
+            
+        case .changed:
+            let angle = atan2f(Float(touchLocation.y - center.y),
+                               Float(touchLocation.x - center.x))
+            let angleDiff = Float(deltaAngle) - angle // 초기 각도와 현재 각도의 차이 계산
+            transform = CGAffineTransform(rotationAngle: CGFloat(-angleDiff))
+            
+            setupIconButtonFrame(size: contentBorderView.frame.size)
+            setNeedsDisplay()
+            
+        default:
+            break
+        }
+    }
     
     // 회전 각도 추출
     private func getAngle(_ t: CGAffineTransform) -> CGFloat {
@@ -173,17 +233,26 @@ extension StickerView {
     private func initSubViews() {
         addSubview(contentBorderView)
         contentBorderView.addSubview(contentsView)
-        addSubview(rotationButton)
+        addSubview(resizeButton)
         addSubview(deleteButton)
-        rotationButton.addSubview(rotationImageView)
+        addSubview(topLeftButton)
+        addSubview(bottomLeftButton)
+        addSubview(rotationButton)
+        resizeButton.addSubview(resizeImageView)
         deleteButton.addSubview(deleteImageView)
+        topLeftButton.addSubview(topLeftImageView)
+        bottomLeftButton.addSubview(bottomLeftImageView)
+        rotationButton.addSubview(rotationImageView)
     }
     
     private func initConstraints() {
         contentBorderView.translatesAutoresizingMaskIntoConstraints = false
         contentsView.translatesAutoresizingMaskIntoConstraints = false
-        rotationImageView.translatesAutoresizingMaskIntoConstraints = false
+        resizeImageView.translatesAutoresizingMaskIntoConstraints = false
         deleteImageView.translatesAutoresizingMaskIntoConstraints = false
+        topLeftImageView.translatesAutoresizingMaskIntoConstraints = false
+        bottomLeftImageView.translatesAutoresizingMaskIntoConstraints = false
+        rotationImageView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             contentBorderView.topAnchor.constraint(equalTo: contentsView.topAnchor),
@@ -196,27 +265,83 @@ extension StickerView {
             contentsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -(iconButtonLength / 2)),
             contentsView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(iconButtonLength / 2)),
             
-            rotationImageView.centerXAnchor.constraint(equalTo: rotationButton.centerXAnchor),
-            rotationImageView.centerYAnchor.constraint(equalTo: rotationButton.centerYAnchor),
-            rotationImageView.widthAnchor.constraint(equalToConstant: 24),
-            rotationImageView.heightAnchor.constraint(equalToConstant: 24),
+            resizeImageView.centerXAnchor.constraint(equalTo: resizeButton.centerXAnchor),
+            resizeImageView.centerYAnchor.constraint(equalTo: resizeButton.centerYAnchor),
+            resizeImageView.widthAnchor.constraint(equalToConstant: 24),
+            resizeImageView.heightAnchor.constraint(equalToConstant: 24),
             
             deleteImageView.centerXAnchor.constraint(equalTo: deleteButton.centerXAnchor),
             deleteImageView.centerYAnchor.constraint(equalTo: deleteButton.centerYAnchor),
             deleteImageView.widthAnchor.constraint(equalToConstant: 24),
-            deleteImageView.heightAnchor.constraint(equalToConstant: 24)
+            deleteImageView.heightAnchor.constraint(equalToConstant: 24),
+            
+            topLeftImageView.centerXAnchor.constraint(equalTo: topLeftButton.centerXAnchor),
+            topLeftImageView.centerYAnchor.constraint(equalTo: topLeftButton.centerYAnchor),
+            topLeftImageView.widthAnchor.constraint(equalToConstant: 24),
+            topLeftImageView.heightAnchor.constraint(equalToConstant: 24),
+            
+            bottomLeftImageView.centerXAnchor.constraint(equalTo: bottomLeftButton.centerXAnchor),
+            bottomLeftImageView.centerYAnchor.constraint(equalTo: bottomLeftButton.centerYAnchor),
+            bottomLeftImageView.widthAnchor.constraint(equalToConstant: 24),
+            bottomLeftImageView.heightAnchor.constraint(equalToConstant: 24),
+            
+            rotationImageView.centerXAnchor.constraint(equalTo: rotationButton.centerXAnchor),
+            rotationImageView.centerYAnchor.constraint(equalTo: rotationButton.centerYAnchor),
+            rotationImageView.widthAnchor.constraint(equalToConstant: 24),
+            rotationImageView.heightAnchor.constraint(equalToConstant: 24)
+            
         ])
     }
     
     private func initGesture() {
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(drag))
-        addGestureRecognizer(panGesture)
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap))
+        addTapGesture(self, action: #selector(tap))
+        addPanGesture(self, action: #selector(drag))
+        addPanGesture(resizeButton, action: #selector(rotateAndResize))
+        addPanGesture(rotationButton, action: #selector(rotation))
+        addPanGesture(topLeftButton, action: #selector(resize))
+        addPanGesture(bottomLeftButton, action: #selector(resize))
+    }
+    
+    private func addPanGesture(_ view: UIView, action: Selector) {
+        let gesture = UIPanGestureRecognizer(target: self,
+                                             action: action)
+        view.addGestureRecognizer(gesture)
+    }
+    
+    private func addTapGesture(_ view: UIView, action: Selector) {
+        let tapGesture = UITapGestureRecognizer(target: self,
+                                                action: action)
         addGestureRecognizer(tapGesture)
+    }
+    
+    private func setupIconButtonFrame(size: CGSize) {
+        let width = size.width
+        let height = size.height
         
-        let rotateAndResizeGesture = UIPanGestureRecognizer(target: self, action: #selector(rotateAndResize))
-        rotationButton.addGestureRecognizer(rotateAndResizeGesture)
+        deleteButton.frame = CGRect(x: width,
+                                    y: 0,
+                                    width: iconButtonLength,
+                                    height: iconButtonLength)
+        
+        resizeButton.frame = CGRect(x: width,
+                                    y: height,
+                                    width: iconButtonLength,
+                                    height: iconButtonLength)
+        
+        topLeftButton.frame = CGRect(x: 0,
+                                     y: 0,
+                                     width: iconButtonLength,
+                                     height: iconButtonLength)
+        
+        bottomLeftButton.frame = CGRect(x: 0,
+                                        y: height,
+                                        width: iconButtonLength,
+                                        height: iconButtonLength)
+        
+        rotationButton.frame = CGRect(x: width / 2,
+                                      y: 0,
+                                      width: iconButtonLength,
+                                      height: iconButtonLength)
     }
     
     private func initTarget() {
@@ -231,20 +356,16 @@ extension StickerView {
         
         guard let parent = parentVC as? MainViewController else { return }
         
-        frame = CGRect(x: (parent.mainView.backgroundImageView.frame.width / 2) - (initImageWidth / 2) - (iconButtonLength / 2),
-                       y: (parent.mainView.backgroundImageView.frame.height / 2) - (initImageHeight / 2) - (iconButtonLength / 2),
+        let centerX = (parent.mainView.backgroundImageView.frame.width - (initImageWidth + iconButtonLength)) / 2
+        let centerY = (parent.mainView.backgroundImageView.frame.height - (initImageHeight + iconButtonLength)) / 2
+        
+        frame = CGRect(x: centerX,
+                       y: centerY,
                        width: initImageWidth + iconButtonLength,
                        height: initImageHeight + iconButtonLength)
         
-        deleteButton.frame = CGRect(x: initImageWidth,
-                                    y: 0,
-                                    width: iconButtonLength,
-                                    height: iconButtonLength)
-        
-        rotationButton.frame = CGRect(x: initImageWidth,
-                                      y: initImageHeight,
-                                      width: iconButtonLength,
-                                      height: iconButtonLength)
+        setupIconButtonFrame(size: CGSize(width: initImageWidth,
+                                          height: initImageHeight))
     }
 }
 
