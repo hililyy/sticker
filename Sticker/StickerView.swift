@@ -18,18 +18,12 @@ final class StickerView: UIView {
         view.layer.borderColor = UIColor.white.cgColor
         return view
     }()
-
-    private var deleteButton = UIButton(type: .custom)
-    private var resizeButton = UIButton(type: .custom)
-    private var topLeftButton = UIButton(type: .custom)
-    private var bottomLeftButton = UIButton(type: .custom)
-    private var rotationButton = UIButton(type: .custom)
     
-    private var deleteImageView = UIImageView(image: UIImage(named: "icX"))
-    private var resizeImageView = UIImageView(image: UIImage(named: "icTwoArrow"))
-    private var topLeftImageView = UIImageView(image: UIImage(named: "icArrowLeftTop"))
-    private var bottomLeftImageView = UIImageView(image: UIImage(named: "icArrowLeftBottom"))
-    private var rotationImageView = UIImageView(image: UIImage(named: "icRotate"))
+    private var deleteButton = IconButton(iconName: "icX")
+    private var resizeButton = IconButton(iconName: "icTwoArrow")
+    private var topLeftButton = IconButton(iconName: "icArrowLeftTop")
+    private var bottomLeftButton = IconButton(iconName: "icArrowLeftBottom")
+    private var rotationButton = IconButton(iconName: "icRotate")
     
     weak var parentVC: UIViewController?
     var delegate: StickerDelegate?
@@ -238,22 +232,11 @@ extension StickerView {
         addSubview(topLeftButton)
         addSubview(bottomLeftButton)
         addSubview(rotationButton)
-        resizeButton.addSubview(resizeImageView)
-        deleteButton.addSubview(deleteImageView)
-        topLeftButton.addSubview(topLeftImageView)
-        bottomLeftButton.addSubview(bottomLeftImageView)
-        rotationButton.addSubview(rotationImageView)
     }
     
     private func initConstraints() {
         contentBorderView.translatesAutoresizingMaskIntoConstraints = false
         contentsView.translatesAutoresizingMaskIntoConstraints = false
-        resizeImageView.translatesAutoresizingMaskIntoConstraints = false
-        deleteImageView.translatesAutoresizingMaskIntoConstraints = false
-        topLeftImageView.translatesAutoresizingMaskIntoConstraints = false
-        bottomLeftImageView.translatesAutoresizingMaskIntoConstraints = false
-        rotationImageView.translatesAutoresizingMaskIntoConstraints = false
-        
         NSLayoutConstraint.activate([
             contentBorderView.topAnchor.constraint(equalTo: contentsView.topAnchor),
             contentBorderView.leadingAnchor.constraint(equalTo: contentsView.leadingAnchor),
@@ -264,32 +247,6 @@ extension StickerView {
             contentsView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: iconButtonLength / 2),
             contentsView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -(iconButtonLength / 2)),
             contentsView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -(iconButtonLength / 2)),
-            
-            resizeImageView.centerXAnchor.constraint(equalTo: resizeButton.centerXAnchor),
-            resizeImageView.centerYAnchor.constraint(equalTo: resizeButton.centerYAnchor),
-            resizeImageView.widthAnchor.constraint(equalToConstant: 24),
-            resizeImageView.heightAnchor.constraint(equalToConstant: 24),
-            
-            deleteImageView.centerXAnchor.constraint(equalTo: deleteButton.centerXAnchor),
-            deleteImageView.centerYAnchor.constraint(equalTo: deleteButton.centerYAnchor),
-            deleteImageView.widthAnchor.constraint(equalToConstant: 24),
-            deleteImageView.heightAnchor.constraint(equalToConstant: 24),
-            
-            topLeftImageView.centerXAnchor.constraint(equalTo: topLeftButton.centerXAnchor),
-            topLeftImageView.centerYAnchor.constraint(equalTo: topLeftButton.centerYAnchor),
-            topLeftImageView.widthAnchor.constraint(equalToConstant: 24),
-            topLeftImageView.heightAnchor.constraint(equalToConstant: 24),
-            
-            bottomLeftImageView.centerXAnchor.constraint(equalTo: bottomLeftButton.centerXAnchor),
-            bottomLeftImageView.centerYAnchor.constraint(equalTo: bottomLeftButton.centerYAnchor),
-            bottomLeftImageView.widthAnchor.constraint(equalToConstant: 24),
-            bottomLeftImageView.heightAnchor.constraint(equalToConstant: 24),
-            
-            rotationImageView.centerXAnchor.constraint(equalTo: rotationButton.centerXAnchor),
-            rotationImageView.centerYAnchor.constraint(equalTo: rotationButton.centerYAnchor),
-            rotationImageView.widthAnchor.constraint(equalToConstant: 24),
-            rotationImageView.heightAnchor.constraint(equalToConstant: 24)
-            
         ])
     }
     
