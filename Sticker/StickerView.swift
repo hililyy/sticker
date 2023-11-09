@@ -35,14 +35,14 @@ final class StickerView: UIView {
     private var defaultMaximumSize: Int = 0
     
     private var minimumSize: Int = 0 {
-        willSet(newValue) {
-            self.minimumSize = max(newValue, defaultMinimumSize)
+        didSet {
+            self.minimumSize = max(minimumSize, defaultMinimumSize)
         }
     }
     
     private var maximumSize: Int = 0 {
-        willSet(newValue) {
-            self.maximumSize = min(newValue, defaultMaximumSize)
+        didSet {
+            self.maximumSize = min(maximumSize, defaultMaximumSize)
         }
     }
     
@@ -231,8 +231,8 @@ extension StickerView {
         
         guard let parent = parentVC as? MainViewController else { return }
         
-        frame = CGRect(x: (parent.mainView.backgroundImageView.frame.width / 2) - (initImageWidth / 2),
-                       y: (parent.mainView.backgroundImageView.frame.height / 2) - (initImageHeight / 2),
+        frame = CGRect(x: (parent.mainView.backgroundImageView.frame.width / 2) - (initImageWidth / 2) - (iconButtonLength / 2),
+                       y: (parent.mainView.backgroundImageView.frame.height / 2) - (initImageHeight / 2) - (iconButtonLength / 2),
                        width: initImageWidth + iconButtonLength,
                        height: initImageHeight + iconButtonLength)
         

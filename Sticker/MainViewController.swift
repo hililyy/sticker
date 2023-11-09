@@ -16,8 +16,8 @@ final class MainViewController: UIViewController {
     private let imageViewStrings = ["birthday", "cake", "cat", "cow", "dog", "pie", "rabbit"]
     
     var selectedSticker: StickerView? {
-        willSet {
-            resetSelectedStickerUI(selectedSticker: newValue)
+        didSet {
+            resetSelectedStickerUI(selectedSticker: selectedSticker)
         }
     }
     
@@ -74,10 +74,10 @@ final class MainViewController: UIViewController {
         vc.completeHandler = { [weak self] text in
             guard let self else { return }
             
-            let smallLabel = self.getLabelbyFont(text: text, fontSize: 40)
             let largeLabel = self.getLabelbyFont(text: text, fontSize: 500)
             
-            let smallRect = smallLabel.frame.size
+            let smallRect = CGSize(width: largeLabel.bounds.width * 0.1,
+                                   height: largeLabel.bounds.height * 0.1)
             let labelImage = UIImageView(image: largeLabel.convertToImage())
             
             addStickerView(contentView: labelImage, size: smallRect)
