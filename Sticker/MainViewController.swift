@@ -32,13 +32,9 @@ final class MainViewController: UIViewController {
     }
     
     private func resetSelectedStickerUI(selectedSticker: StickerView?) {
-//        if let sticker = selectedSticker {
-//            sticker.superview?.bringSubviewToFront(sticker)
-//        }
-        
         for view in mainView.backgroundImageView.subviews {
             if let sticker = view as? StickerView {
-                sticker.setBorderView(isSelected: view == selectedSticker)
+                sticker.isHiddenBorderView(isSelected: view == selectedSticker)
             }
         }
     }
