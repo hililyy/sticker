@@ -1,5 +1,5 @@
 //
-//  MainView.swift
+//  CanvasStickerView.swift
 //  Sticker
 //
 //  Created by 강조은 on 2023/11/06.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MainView: UIView {
+final class CanvasStickerView: UIView {
     
     let saveButton: UIButton = {
         let button = UIButton(type: .custom)

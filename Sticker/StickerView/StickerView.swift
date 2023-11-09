@@ -112,7 +112,7 @@ final class StickerView: UIView {
     }
     
     @objc private func deleteImage() {
-        guard let parent = parentVC as? MainViewController else { return }
+        guard let parent = parentVC as? CanvasStickerVC else { return }
         parent.selectedSticker?.removeFromSuperview()
     }
 }
@@ -185,7 +185,7 @@ extension StickerView {
     }
     
     @objc private func drag(_ recognizer: UIPanGestureRecognizer) {
-        guard let parent = parentVC as? MainViewController else { return }
+        guard let parent = parentVC as? CanvasStickerVC else { return }
         
         let translation = recognizer.translation(in: parent.mainView.backgroundImageView)
         recognizer.view?.center = CGPoint(x: (recognizer.view?.center.x ?? 0) + translation.x,
@@ -261,7 +261,7 @@ extension StickerView {
         minimumSize = defaultMinimumSize
         maximumSize = defaultMaximumSize
         
-        guard let parent = parentVC as? MainViewController else { return }
+        guard let parent = parentVC as? CanvasStickerVC else { return }
         
         let centerX = (parent.mainView.backgroundImageView.frame.width - (initImageWidth + iconButtonLength)) / 2
         let centerY = (parent.mainView.backgroundImageView.frame.height - (initImageHeight + iconButtonLength)) / 2
