@@ -118,15 +118,16 @@ final class StickerView: UIView {
             scale = min(max(scale, minimumScale), maximumScale)
             
             let scaledBounds = getNewSize(initialBounds,
-                                           wScale: scale,
-                                           hScale: scale)
-            deleteButton.frame = CGRect(x: scaledBounds.width - iconButtonLength,
+                                          wScale: scale,
+                                          hScale: scale)
+            
+            deleteButton.frame = CGRect(x: contentBorderView.frame.origin.x + contentBorderView.frame.width - (iconButtonLength / 2),
                                         y: 0,
                                         width: iconButtonLength,
                                         height: iconButtonLength)
             
-            rotationButton.frame = CGRect(x: scaledBounds.width - iconButtonLength,
-                                          y: scaledBounds.height - iconButtonLength,
+            rotationButton.frame = CGRect(x: contentBorderView.frame.width,
+                                          y: contentBorderView.frame.height,
                                           width: iconButtonLength,
                                           height: iconButtonLength)
             bounds = scaledBounds
@@ -147,8 +148,8 @@ final class StickerView: UIView {
     private func getNewSize(_ rect: CGRect, wScale: CGFloat, hScale: CGFloat) -> CGRect {
         return CGRect(x: rect.origin.x,
                       y: rect.origin.y,
-                      width: rect.size.width * wScale,
-                      height: rect.size.height * hScale)
+                      width: ((rect.size.width - iconButtonLength) * wScale) + iconButtonLength,
+                      height: ((rect.size.height - iconButtonLength) * hScale) + iconButtonLength)
     }
     
     // 두 점 사이의 거리 (피타고라스)
@@ -224,7 +225,7 @@ extension StickerView {
     
     func initFrame() {
         defaultMinimumSize = 30
-        defaultMaximumSize = 500
+        defaultMaximumSize = 1000
         minimumSize = defaultMinimumSize
         maximumSize = defaultMaximumSize
         

@@ -16,6 +16,10 @@
 		022CB9972AEF805C0055CABA /* StickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022CB9962AEF805C0055CABA /* StickerView.swift */; };
 		023F1A432AF8A68100A16D89 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023F1A422AF8A68100A16D89 /* MainView.swift */; };
 		023F1A452AFA073700A16D89 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023F1A442AFA073700A16D89 /* Extension.swift */; };
+		023F1A492AFA3DF300A16D89 /* TextFieldPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023F1A482AFA3DF300A16D89 /* TextFieldPopupView.swift */; };
+		023F1A4B2AFA3E0800A16D89 /* TextFieldPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023F1A4A2AFA3E0800A16D89 /* TextFieldPopupVC.swift */; };
+		023F1A4D2AFB7BB500A16D89 /* qweasdzxc.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 023F1A4C2AFB7BB500A16D89 /* qweasdzxc.ttf */; };
+		023F1A4F2AFB7DC000A16D89 /* haru.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 023F1A4E2AFB7DC000A16D89 /* haru.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +34,10 @@
 		022CB9962AEF805C0055CABA /* StickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerView.swift; sourceTree = "<group>"; };
 		023F1A422AF8A68100A16D89 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		023F1A442AFA073700A16D89 /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		023F1A482AFA3DF300A16D89 /* TextFieldPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldPopupView.swift; sourceTree = "<group>"; };
+		023F1A4A2AFA3E0800A16D89 /* TextFieldPopupVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldPopupVC.swift; sourceTree = "<group>"; };
+		023F1A4C2AFB7BB500A16D89 /* qweasdzxc.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = qweasdzxc.ttf; sourceTree = "<group>"; };
+		023F1A4E2AFB7DC000A16D89 /* haru.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = haru.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +80,10 @@
 				022CB98B2AEF73D80055CABA /* LaunchScreen.storyboard */,
 				022CB98E2AEF73D80055CABA /* Info.plist */,
 				023F1A442AFA073700A16D89 /* Extension.swift */,
+				023F1A482AFA3DF300A16D89 /* TextFieldPopupView.swift */,
+				023F1A4A2AFA3E0800A16D89 /* TextFieldPopupVC.swift */,
+				023F1A4C2AFB7BB500A16D89 /* qweasdzxc.ttf */,
+				023F1A4E2AFB7DC000A16D89 /* haru.ttf */,
 			);
 			path = Sticker;
 			sourceTree = "<group>";
@@ -134,6 +146,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				023F1A4F2AFB7DC000A16D89 /* haru.ttf in Resources */,
+				023F1A4D2AFB7BB500A16D89 /* qweasdzxc.ttf in Resources */,
 				022CB98D2AEF73D80055CABA /* LaunchScreen.storyboard in Resources */,
 				022CB98A2AEF73D80055CABA /* Assets.xcassets in Resources */,
 			);
@@ -146,9 +160,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				023F1A4B2AFA3E0800A16D89 /* TextFieldPopupVC.swift in Sources */,
 				022CB9952AEF7B260055CABA /* StickerListCVCell.swift in Sources */,
 				023F1A432AF8A68100A16D89 /* MainView.swift in Sources */,
 				023F1A452AFA073700A16D89 /* Extension.swift in Sources */,
+				023F1A492AFA3DF300A16D89 /* TextFieldPopupView.swift in Sources */,
 				022CB9972AEF805C0055CABA /* StickerView.swift in Sources */,
 				022CB9852AEF73D70055CABA /* MainViewController.swift in Sources */,
 				022CB9812AEF73D70055CABA /* AppDelegate.swift in Sources */,

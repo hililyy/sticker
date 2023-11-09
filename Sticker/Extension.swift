@@ -19,9 +19,8 @@ extension UIImageView {
 
 
 extension UIImage {
-    func saveImageAsPhoto(completion: @escaping () -> ()) {
+    func saveImageAsPhoto() {
         UIImageWriteToSavedPhotosAlbum(self, nil, nil, nil)
-        completion()
     }
 }
 

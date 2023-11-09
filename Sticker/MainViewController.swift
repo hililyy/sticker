@@ -52,9 +52,9 @@ final class MainViewController: UIViewController {
         selectedSticker = nil
         
         guard let mergedImage = mainView.backgroundImageView.mergeImage() else { return }
-        mergedImage.saveImageAsPhoto {
-            self.toast(message: "저장됐슴")
-        }
+        mergedImage.saveImageAsPhoto()
+        toast(message: "저장됐슴")
+        
     }
     
     @objc private func tap(_ sender: UITapGestureRecognizer) {
@@ -71,17 +71,28 @@ final class MainViewController: UIViewController {
         let vc = TextFieldPopupVC()
         vc.modalTransitionStyle = .crossDissolve
         vc.modalPresentationStyle = .overFullScreen
-        vc.completeHandler = { text in
-            let textView = UITextView()
-            textView.text = text
-            textView.backgroundColor = UIColor.clear
-            textView.font = .systemFont(ofSize: 500)
-            textView.sizeToFit()
-            let labelImage = UIImageView(image: textView.convertToImage())
-            self.addStickerView(contentView: labelImage)
+        vc.completeHandler = { [weak self] text in
+            guard let self else { return }
             
+            let smallLabel = self.getLabelbyFont(text: text, fontSize: 40)
+            let largeLabel = self.getLabelbyFont(text: text, fontSize: 500)
+            
+            let smallRect = smallLabel.frame.size
+            let labelImage = UIImageView(image: largeLabel.convertToImage())
+            
+            addStickerView(contentView: labelImage, size: smallRect)
         }
         present(vc, animated: true)
+    }
+    
+    private func getLabelbyFont(text: String, fontSize: CGFloat) -> UILabel {
+        let label = UILabel()
+        label.text = text
+        label.backgroundColor = UIColor.clear
+        label.font = UIFont(name: "Ownglyph_RDO_ballpen-Rg", size: fontSize)
+        label.numberOfLines = 0
+        label.sizeToFit()
+        return label
     }
 }
 
@@ -119,23 +130,40 @@ extension MainViewController {
         mainView.backgroundImageView.addGestureRecognizer(tapGesture)
     }
     
-    private func addStickerView(contentView: UIView) {
+    private func addStickerView(contentView: UIView, size: CGSize? = nil) {
         let stickerView = StickerView(contentsView: contentView)
+        var newSize = getNewSize(size: contentView.frame.size)
         
-        if contentView.frame.width > contentView.frame.height {
-            stickerView.initImageWidth = contentView.frame.width * 150 / contentView.frame.height
-            stickerView.initImageHeight = 150
-        } else {
-            stickerView.initImageWidth = 100
-            stickerView.initImageHeight = contentView.frame.height * 100 / contentView.frame.width
+        if let size {
+            newSize = size
         }
+        
+        stickerView.initImageWidth = newSize.width
+        stickerView.initImageHeight = newSize.height
         
         stickerView.parentVC = self
         stickerView.delegate = self
-        selectedSticker = stickerView
+        
         stickerView.initFrame()
         mainView.backgroundImageView.addSubview(stickerView)
         initAnimation(view: stickerView)
+        
+        selectedSticker = stickerView
+    }
+    
+    private func getNewSize(size: CGSize) -> CGSize {
+        var newSize: CGSize = .zero
+        let minimumSize: CGFloat = 100
+        
+        if size.width > size.height {
+            newSize.width = size.width * minimumSize / size.height
+            newSize.height = minimumSize
+        } else {
+            newSize.width = minimumSize
+            newSize.height = size.height * minimumSize / size.width
+        }
+        
+        return newSize
     }
 }
 
