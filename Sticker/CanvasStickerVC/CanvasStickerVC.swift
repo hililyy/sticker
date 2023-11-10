@@ -29,46 +29,32 @@ final class CanvasStickerVC: StickerBaseVC {
         initalize()
     }
     
-    var text = ""
-    var lastPosition: CGPoint = .zero
-    var lastRotationAngle: CGFloat = 0
-    var lastScale: CGFloat = 0
-    var lastInitialBounds: CGRect = .zero
+    var info = StickerTextModel()
     
     private func resetSelectedStickerUI(selectedSticker: StickerView?) {
         for view in mainView.backgroundImageView.subviews {
             if let sticker = view as? StickerView {
                 sticker.isHiddenBorderView(isSelected: view == selectedSticker)
                 mainView.editButton.isHidden = selectedSticker?.type != .label
+            } else {
+                mainView.editButton.isHidden = true
             }
         }
     }
     
-    private func addStickerView(contentView: UIView, type: StickerType, text: String = "", size: CGSize? = nil) {
-        self.text = text
+    private func addStickerView(contentView: UIView, type: StickerType, size: CGSize? = nil) {
         
         let stickerView = StickerView(contentsView: contentView)
         let newSize = getNewSize(size: contentView.frame.size)
         
         stickerView.type = type
-        stickerView.text = text
         stickerView.initImageWidth = newSize.width
         stickerView.initImageHeight = newSize.height
         
         stickerView.parentVC = self
         stickerView.delegate = self
-        if lastPosition != .zero {
-            stickerView.lastPosition = lastPosition
-        }
-        if lastRotationAngle != 0 {
-            stickerView.lastRotationAngle = lastRotationAngle
-        }
-        if lastScale != 0 {
-            stickerView.lastScale = lastScale
-        }
-        if lastInitialBounds != .zero {
-            stickerView.lastInitialBounds = lastInitialBounds
-        }
+        stickerView.stickerInfo = info
+        
         mainView.backgroundImageView.addSubview(stickerView)
         initAnimation(view: stickerView)
         
@@ -89,6 +75,28 @@ final class CanvasStickerVC: StickerBaseVC {
         }
         
         return newSize
+    }
+    
+    private func clearStickerInfo() {
+        info.isEdit = false
+        info.lastPosition = .zero
+        info.lastRotationAngle = 0
+        info.lastScale = 0
+    }
+}
+
+// MARK: - Protocol Function
+extension CanvasStickerVC: StickerDelegate {
+    func tapLabelSticker(info: StickerTextModel) {
+        self.info = info
+        self.info.isEdit = true
+    }
+    
+    func selectSticker(stickerView: StickerView) {
+        selectedSticker = stickerView
+        if stickerView.type == .image {
+            clearStickerInfo()
+        }
     }
 }
 
@@ -184,8 +192,9 @@ extension CanvasStickerVC {
             let smallRect = CGSize(width: largeLabel.bounds.width * 0.1,
                                    height: largeLabel.bounds.height * 0.1)
             let labelImage = UIImageView(image: largeLabel.convertToImage())
-            
-            addStickerView(contentView: labelImage, type: .label, text: text, size: smallRect)
+            info.text = text
+            clearStickerInfo()
+            addStickerView(contentView: labelImage, type: .label, size: smallRect)
         }
         
         present(vc, animated: true)
@@ -195,9 +204,10 @@ extension CanvasStickerVC {
         let vc = TextFieldPopupVC()
         vc.modalTransitionStyle = .crossDissolve
         vc.modalPresentationStyle = .overFullScreen
-        if text != "" {
-            vc.textFieldPopupView.contentsTextView.text = text
+        if !info.text.isEmpty {
+            vc.textFieldPopupView.contentsTextView.text = info.text
         }
+        
         vc.completeHandler = { [weak self] text in
             guard let self else { return }
             guard let selectedSticker else { return }
@@ -207,10 +217,9 @@ extension CanvasStickerVC {
             let smallRect = CGSize(width: selectedSticker.bounds.width,
                                    height: selectedSticker.bounds.height)
             let labelImage = UIImageView(image: largeLabel.convertToImage())
-            
+            info.text = text
             addStickerView(contentView: labelImage,
                            type: .label,
-                           text: text,
                            size: smallRect)
         }
         
@@ -271,26 +280,6 @@ extension CanvasStickerVC: UICollectionViewDataSource, UICollectionViewDelegate 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let img = UIImageView(image: UIImage(named: imageViewStrings[indexPath.row]))
         addStickerView(contentView: img, type: .image)
-    }
-}
-
-// MARK: - Protocol Function
-extension CanvasStickerVC: StickerDelegate {
-    func tapLabelSticker(text: String, lastPosition: CGPoint, lastRotationAngle: CGFloat, lastScale: CGFloat, lastInitialBounds: CGRect) {
-        self.text = text
-        self.lastPosition = lastPosition
-        self.lastRotationAngle = lastRotationAngle
-        self.lastScale = lastScale
-        self.lastInitialBounds = lastInitialBounds
-    }
-    
-    func selectSticker(stickerView: StickerView) {
-        selectedSticker = stickerView
-        if stickerView.type == .image {
-            lastPosition = .zero
-            lastRotationAngle = 0
-            lastScale = 0
-        }
     }
 }
 

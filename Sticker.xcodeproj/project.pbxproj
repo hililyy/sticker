@@ -24,6 +24,7 @@
 		027815442AFCC1E900E5D551 /* StickerBaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027815432AFCC1E900E5D551 /* StickerBaseVC.swift */; };
 		027815482AFCC76300E5D551 /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027815472AFCC76300E5D551 /* Enum.swift */; };
 		0278154A2AFE0AA400E5D551 /* StickerTextModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027815492AFE0AA400E5D551 /* StickerTextModel.swift */; };
+		0278154C2AFE10E500E5D551 /* StickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0278154B2AFE10E500E5D551 /* StickerDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		027815432AFCC1E900E5D551 /* StickerBaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerBaseVC.swift; sourceTree = "<group>"; };
 		027815472AFCC76300E5D551 /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
 		027815492AFE0AA400E5D551 /* StickerTextModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerTextModel.swift; sourceTree = "<group>"; };
+		0278154B2AFE10E500E5D551 /* StickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 			children = (
 				022CB9962AEF805C0055CABA /* StickerView.swift */,
 				027815492AFE0AA400E5D551 /* StickerTextModel.swift */,
+				0278154B2AFE10E500E5D551 /* StickerDelegate.swift */,
 			);
 			path = StickerView;
 			sourceTree = "<group>";
@@ -224,6 +227,7 @@
 				022CB9952AEF7B260055CABA /* StickerListCVCell.swift in Sources */,
 				027815482AFCC76300E5D551 /* Enum.swift in Sources */,
 				023F1A432AF8A68100A16D89 /* CanvasStickerView.swift in Sources */,
+				0278154C2AFE10E500E5D551 /* StickerDelegate.swift in Sources */,
 				023F1A452AFA073700A16D89 /* Extension.swift in Sources */,
 				023F1A492AFA3DF300A16D89 /* TextFieldPopupView.swift in Sources */,
 				022CB9972AEF805C0055CABA /* StickerView.swift in Sources */,

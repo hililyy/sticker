@@ -39,3 +39,9 @@ extension UIView {
         return nil
     }
 }
+
+extension CGRect {
+    init(x: CGFloat, y: CGFloat, size: CGFloat) {
+        self.init(x: x, y: y, width: size, height: size)
+    }
+}
