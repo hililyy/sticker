@@ -288,6 +288,7 @@ extension CanvasStickerVC: UICollectionViewDataSource, UICollectionViewDelegate 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let img = UIImageView(image: UIImage(named: imageViewStrings[indexPath.row]))
+        clearStickerInfo()
         addStickerView(contentView: img,
                        type: .image)
     }
@@ -298,6 +299,7 @@ extension CanvasStickerVC: UIImagePickerControllerDelegate, UINavigationControll
     func imagePickerController( _ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let selectedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             let img = UIImageView(image: selectedImage)
+            clearStickerInfo()
             addStickerView(contentView: img,
                            type: .image)
         }
