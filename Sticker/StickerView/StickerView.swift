@@ -31,6 +31,13 @@ final class StickerView: UIView {
     
     weak var parentVC: UIViewController?
     var delegate: StickerDelegate?
+    var type: StickerType = .image
+    var text: String = ""
+    var lastPosition: CGPoint = .zero
+    var lastRotationAngle: CGFloat = 0
+    var lastScale: CGFloat = 0
+    var lastInitialBounds: CGRect = .zero
+    var scale: CGFloat = .zero
     
     var initImageWidth: CGFloat = 0
     var initImageHeight: CGFloat = 0
@@ -40,6 +47,7 @@ final class StickerView: UIView {
     private var defaultMaximumSize: Int = 0
     
     private var initialBounds: CGRect = .zero // 초기 뷰의 크기
+    private var firstInitBounds: CGRect = .zero
     private var initialDistance: CGFloat = 0 // 초기 터치 위치와 뷰의 중심 사이의 거리
     private var deltaAngle: CGFloat = 0 // 현재 뷰의 회전 각도와 제스처의 각도 차이
     
@@ -128,6 +136,7 @@ extension StickerView {
         let angle = atan2f(Float(touchLocation.y - center.y),
                            Float(touchLocation.x - center.x))
         let angleDiff = Float(deltaAngle) - angle // 초기 각도와 현재 각도의 차이 계산
+        lastRotationAngle = CGFloat(angleDiff)
         transform = CGAffineTransform(rotationAngle: CGFloat(-angleDiff))
         
         setupIconButtonFrame(size: contentBorderView.frame.size)
@@ -139,22 +148,29 @@ extension StickerView {
                                       point2: touchLocation)
     }
     
-    private func changeResize(touchLocation: CGPoint, center: CGPoint) {
+    private func changeResize(touchLocation: CGPoint, center: CGPoint) -> CGFloat {
         var scale = getDistance(point1: center,
                                 point2: touchLocation) / initialDistance
         let minimumScale = CGFloat(minimumSize) / min(initialBounds.size.width,
                                                       initialBounds.size.height)
         let maximumScale = CGFloat(maximumSize) / max(initialBounds.size.width,
                                                       initialBounds.size.height)
+        
+        let firstMinimumScale = CGFloat(minimumSize) / min(firstInitBounds.size.width,
+                                                           firstInitBounds.size.height)
+        let firstMaximumScale = CGFloat(maximumSize) / max(firstInitBounds.size.width,
+                                                           firstInitBounds.size.height)
+        
         scale = min(max(scale, minimumScale), maximumScale)
         
         let scaledBounds = getNewSize(initialBounds,
                                       wScale: scale,
                                       hScale: scale)
         
-        setupIconButtonFrame(size: contentBorderView.frame.size)
+        setupIconButtonFrame(size: contentsView.frame.size)
         
         bounds = scaledBounds
+        return scale
     }
     
     // 회전 각도 추출
@@ -182,6 +198,12 @@ extension StickerView {
 extension StickerView {
     @objc private func tap() {
         delegate?.selectSticker(stickerView: self)
+        if type == .label {
+            delegate?.tapLabelSticker(text: text,
+                                      lastPosition: self.center,
+                                      lastRotationAngle: lastRotationAngle,
+                                      lastScale: lastScale, lastInitialBounds: lastInitialBounds)
+        }
     }
     
     @objc private func drag(_ recognizer: UIPanGestureRecognizer) {
@@ -190,9 +212,15 @@ extension StickerView {
         let translation = recognizer.translation(in: parent.mainView.backgroundImageView)
         recognizer.view?.center = CGPoint(x: (recognizer.view?.center.x ?? 0) + translation.x,
                                           y: (recognizer.view?.center.y ?? 0) + translation.y)
+        
+        lastPosition = CGPoint(x: (recognizer.view?.center.x ?? 0) + translation.x,
+                               y: (recognizer.view?.center.y ?? 0) + translation.y)
         recognizer.setTranslation(.zero, in: self)
         
         delegate?.selectSticker(stickerView: self)
+        if type == .label {
+            delegate?.tapLabelSticker(text: text, lastPosition: self.center, lastRotationAngle: lastRotationAngle, lastScale: lastScale, lastInitialBounds: lastInitialBounds)
+        }
     }
     
     @objc private func rotateAndResize(_ recognizer: UIPanGestureRecognizer) {
@@ -207,8 +235,23 @@ extension StickerView {
             
         case .changed:
             changeRotate(touchLocation: touchLocation, center: center)
-            changeResize(touchLocation: touchLocation, center: center)
+            scale = changeResize(touchLocation: touchLocation, center: center)
+            
             setNeedsDisplay()
+            
+        case .ended:
+            if lastScale == 0 {
+                lastScale = scale
+            } else {
+                lastScale = lastScale * scale
+            }
+            if type == .label {
+                delegate?.tapLabelSticker(text: text,
+                                          lastPosition: self.center,
+                                          lastRotationAngle: lastRotationAngle,
+                                          lastScale: lastScale,
+                                          lastInitialBounds: lastInitialBounds)
+            }
             
         default:
             break
@@ -226,6 +269,9 @@ extension StickerView {
             
         case .changed:
             changeRotate(touchLocation: touchLocation, center: center)
+            if type == .label {
+                delegate?.tapLabelSticker(text: text, lastPosition: self.center, lastRotationAngle: lastRotationAngle, lastScale: lastScale, lastInitialBounds: lastInitialBounds)
+            }
             setNeedsDisplay()
             
         default:
@@ -243,8 +289,25 @@ extension StickerView {
             beganResize(touchLocation: touchLocation)
             
         case .changed:
-            changeResize(touchLocation: touchLocation, center: center)
+            scale = changeResize(touchLocation: touchLocation, center: center)
+            if type == .label {
+                delegate?.tapLabelSticker(text: text, lastPosition: self.center, lastRotationAngle: lastRotationAngle, lastScale: lastScale, lastInitialBounds: lastInitialBounds)
+            }
             setNeedsDisplay()
+            
+        case .ended:
+            if lastScale == 0 {
+                lastScale = scale
+            } else {
+                lastScale = lastScale * scale
+            }
+            if type == .label {
+                delegate?.tapLabelSticker(text: text,
+                                          lastPosition: self.center,
+                                          lastRotationAngle: lastRotationAngle,
+                                          lastScale: lastScale,
+                                          lastInitialBounds: lastInitialBounds)
+            }
             
         default:
             break
@@ -256,7 +319,7 @@ extension StickerView {
 // MARK: - UI Init
 extension StickerView {
     func initFrame() {
-        defaultMinimumSize = 30
+        defaultMinimumSize = 10
         defaultMaximumSize = 1000
         minimumSize = defaultMinimumSize
         maximumSize = defaultMaximumSize
@@ -273,6 +336,20 @@ extension StickerView {
         
         setupIconButtonFrame(size: CGSize(width: initImageWidth,
                                           height: initImageHeight))
+        firstInitBounds = bounds
+        if lastPosition != .zero {
+            self.center = lastPosition
+        }
+        if lastRotationAngle != 0 {
+            transform = CGAffineTransform(rotationAngle: CGFloat(-lastRotationAngle))
+        }
+        if lastScale != 0 {
+            let scaledBounds = getNewSize(bounds,
+                                          wScale: lastScale,
+                                          hScale: lastScale)
+            setupIconButtonFrame(size: CGSize(width: scaledBounds.size.width - iconButtonLength, height: scaledBounds.size.height - iconButtonLength) )
+            bounds = scaledBounds
+        }
     }
 }
 
@@ -339,4 +416,5 @@ extension StickerView {
 
 protocol StickerDelegate {
     func selectSticker(stickerView: StickerView)
+    func tapLabelSticker(text: String, lastPosition: CGPoint, lastRotationAngle: CGFloat, lastScale: CGFloat, lastInitialBounds: CGRect)
 }

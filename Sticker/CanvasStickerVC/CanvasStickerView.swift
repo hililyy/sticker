@@ -76,6 +76,16 @@ final class CanvasStickerView: UIView {
         return button
     }()
     
+    let editButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitle("편집", for: .normal)
+        button.backgroundColor = .orange
+        button.layer.cornerRadius = 5
+        button.setTitleColor(.white, for: .normal)
+        button.isHidden = true
+        return button
+    }()
+    
     lazy var buttonStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [saveButton,
                                                        selectPhotoButton,
@@ -141,17 +151,18 @@ final class CanvasStickerView: UIView {
         addSubview(buttonStackView)
         addSubview(contentView)
         contentView.addSubview(backgroundImageView)
+        backgroundImageView.addSubview(editButton)
         addSubview(bottomView)
         bottomView.addSubview(stickerListCollectionView)
     }
     
     private func initConstraints() {
         buttonStackView.translatesAutoresizingMaskIntoConstraints = false
-        selectPhotoButton.translatesAutoresizingMaskIntoConstraints = false
-        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
-        stickerListCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        bottomView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
+        editButton.translatesAutoresizingMaskIntoConstraints = false
+        bottomView.translatesAutoresizingMaskIntoConstraints = false
+        stickerListCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             buttonStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
@@ -168,6 +179,11 @@ final class CanvasStickerView: UIView {
             backgroundImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             backgroundImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             backgroundImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
+            editButton.topAnchor.constraint(equalTo: backgroundImageView.topAnchor, constant: 20),
+            editButton.trailingAnchor.constraint(equalTo: backgroundImageView.trailingAnchor, constant: -20),
+            editButton.widthAnchor.constraint(equalToConstant: 60),
+            editButton.heightAnchor.constraint(equalToConstant: 40),
             
             bottomView.topAnchor.constraint(equalTo: backgroundImageView.bottomAnchor),
             bottomView.leadingAnchor.constraint(equalTo: leadingAnchor),

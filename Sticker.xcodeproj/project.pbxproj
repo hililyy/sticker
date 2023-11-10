@@ -22,6 +22,8 @@
 		023F1A512AFCB03D00A16D89 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023F1A502AFCB03D00A16D89 /* IconButton.swift */; };
 		027815422AFCC18800E5D551 /* CanvasStickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027815412AFCC18800E5D551 /* CanvasStickerVC.swift */; };
 		027815442AFCC1E900E5D551 /* StickerBaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027815432AFCC1E900E5D551 /* StickerBaseVC.swift */; };
+		027815482AFCC76300E5D551 /* Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027815472AFCC76300E5D551 /* Enum.swift */; };
+		0278154A2AFE0AA400E5D551 /* StickerTextModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 027815492AFE0AA400E5D551 /* StickerTextModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +44,8 @@
 		023F1A502AFCB03D00A16D89 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
 		027815412AFCC18800E5D551 /* CanvasStickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CanvasStickerVC.swift; sourceTree = "<group>"; };
 		027815432AFCC1E900E5D551 /* StickerBaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerBaseVC.swift; sourceTree = "<group>"; };
+		027815472AFCC76300E5D551 /* Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enum.swift; sourceTree = "<group>"; };
+		027815492AFE0AA400E5D551 /* StickerTextModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StickerTextModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				022CB9962AEF805C0055CABA /* StickerView.swift */,
+				027815492AFE0AA400E5D551 /* StickerTextModel.swift */,
 			);
 			path = StickerView;
 			sourceTree = "<group>";
@@ -108,6 +113,7 @@
 				023F1A442AFA073700A16D89 /* Extension.swift */,
 				027815432AFCC1E900E5D551 /* StickerBaseVC.swift */,
 				023F1A552AFCBF0000A16D89 /* Custom */,
+				027815472AFCC76300E5D551 /* Enum.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -216,6 +222,7 @@
 			files = (
 				023F1A4B2AFA3E0800A16D89 /* TextFieldPopupVC.swift in Sources */,
 				022CB9952AEF7B260055CABA /* StickerListCVCell.swift in Sources */,
+				027815482AFCC76300E5D551 /* Enum.swift in Sources */,
 				023F1A432AF8A68100A16D89 /* CanvasStickerView.swift in Sources */,
 				023F1A452AFA073700A16D89 /* Extension.swift in Sources */,
 				023F1A492AFA3DF300A16D89 /* TextFieldPopupView.swift in Sources */,
@@ -224,6 +231,7 @@
 				022CB9812AEF73D70055CABA /* AppDelegate.swift in Sources */,
 				023F1A512AFCB03D00A16D89 /* IconButton.swift in Sources */,
 				022CB9832AEF73D70055CABA /* SceneDelegate.swift in Sources */,
+				0278154A2AFE0AA400E5D551 /* StickerTextModel.swift in Sources */,
 				027815442AFCC1E900E5D551 /* StickerBaseVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
