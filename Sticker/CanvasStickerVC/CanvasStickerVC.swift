@@ -45,7 +45,11 @@ final class CanvasStickerVC: StickerBaseVC {
     private func addStickerView(contentView: UIView, type: StickerType, size: CGSize? = nil) {
         
         let stickerView = StickerView(contentsView: contentView)
-        let newSize = getNewSize(size: contentView.frame.size)
+        var newSize: CGSize = size ?? .zero
+        
+        if type == .image {
+            newSize = getNewSize(size: contentView.frame.size)
+        }
         
         stickerView.type = type
         stickerView.initImageWidth = newSize.width
@@ -56,7 +60,10 @@ final class CanvasStickerVC: StickerBaseVC {
         stickerView.stickerInfo = info
         
         mainView.backgroundImageView.addSubview(stickerView)
-        initAnimation(view: stickerView)
+        
+        if stickerView.type == .image {
+            initAnimation(view: stickerView)
+        }
         
         stickerView.initFrame()
         selectedSticker = stickerView
@@ -194,7 +201,9 @@ extension CanvasStickerVC {
             let labelImage = UIImageView(image: largeLabel.convertToImage())
             info.text = text
             clearStickerInfo()
-            addStickerView(contentView: labelImage, type: .label, size: smallRect)
+            addStickerView(contentView: labelImage,
+                           type: .label,
+                           size: smallRect)
         }
         
         present(vc, animated: true)
@@ -214,8 +223,8 @@ extension CanvasStickerVC {
             selectedSticker.removeFromSuperview()
             let largeLabel = self.getLabelbyFont(text: text, fontSize: 500)
             
-            let smallRect = CGSize(width: selectedSticker.bounds.width,
-                                   height: selectedSticker.bounds.height)
+            let smallRect = CGSize(width: largeLabel.bounds.width * 0.1,
+                                   height: largeLabel.bounds.height * 0.1)
             let labelImage = UIImageView(image: largeLabel.convertToImage())
             info.text = text
             addStickerView(contentView: labelImage,
@@ -279,7 +288,8 @@ extension CanvasStickerVC: UICollectionViewDataSource, UICollectionViewDelegate 
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let img = UIImageView(image: UIImage(named: imageViewStrings[indexPath.row]))
-        addStickerView(contentView: img, type: .image)
+        addStickerView(contentView: img,
+                       type: .image)
     }
 }
 
@@ -288,7 +298,8 @@ extension CanvasStickerVC: UIImagePickerControllerDelegate, UINavigationControll
     func imagePickerController( _ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let selectedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             let img = UIImageView(image: selectedImage)
-            addStickerView(contentView: img, type: .image)
+            addStickerView(contentView: img,
+                           type: .image)
         }
         
         dismiss(animated: true)

@@ -25,7 +25,7 @@ final class TextFieldPopupView: UIView {
     
     private let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .clear
         view.layer.cornerRadius = 10
         return view
     }()
@@ -34,7 +34,7 @@ final class TextFieldPopupView: UIView {
         let textView = UITextView()
         textView.backgroundColor = .clear
         textView.font = .systemFont(ofSize: 17)
-        textView.textColor = .darkGray
+        textView.textColor = .white
         textView.layer.cornerRadius = 15
         textView.layer.borderWidth = 1
         textView.layer.borderColor = UIColor.lightGray.cgColor

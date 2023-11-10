@@ -223,7 +223,7 @@ extension StickerView {
         }
     }
     
-    func sendLabelInfoToVC() {
+    private func sendLabelInfoToVC() {
         if type == .label {
             stickerInfo.lastPosition = self.center
             delegate?.tapLabelSticker(info: stickerInfo)
