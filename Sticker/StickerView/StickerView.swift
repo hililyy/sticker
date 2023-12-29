@@ -273,7 +273,7 @@ extension StickerView {
                                           hScale: stickerInfo.lastScale)
             
             delegate?.setBorderViewPosition(frame: frame,
-                                            bounds: bounds)
+                                            bounds: scaledBounds)
             
             delegate?.setBorderViewRotation(angle: stickerInfo.lastRotationAngle)
             bounds = scaledBounds
