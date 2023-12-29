@@ -7,16 +7,6 @@
 
 import UIKit
 
-extension UIView {
-    func mergeImage() -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(self.frame.size, false, 0.0)
-        self.superview!.layer.render(in: UIGraphicsGetCurrentContext()!)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return image
-    }
-}
-
 extension UIImage {
     func saveImageAsPhoto() {
         UIImageWriteToSavedPhotosAlbum(self, nil, nil, nil)
@@ -37,6 +27,15 @@ extension UIView {
             return UIGraphicsGetImageFromCurrentImageContext()
         }
         return nil
+    }
+    
+    func setMask(with image: UIImage?){
+        guard let image else { return }
+        let masklayer = CALayer()
+        masklayer.frame.origin = .zero
+        masklayer.frame.size = frame.size
+        masklayer.contents = image.cgImage
+        layer.mask = masklayer
     }
 }
 

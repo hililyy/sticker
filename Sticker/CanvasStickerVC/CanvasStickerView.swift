@@ -42,14 +42,13 @@ final class CanvasStickerView: UIView {
     
     let backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .lightGray
+        view.backgroundColor = .black
         return view
     }()
     
     let phoneImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "phone"))
         imageView.isUserInteractionEnabled = true
-        imageView.layer.cornerRadius = 40
         return imageView
     }()
     
@@ -92,6 +91,12 @@ final class CanvasStickerView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        phoneImageView.setMask(with: UIImage(named: "phone"))
+    }
+    
     private func initUI() {
         backgroundColor = .white
         
@@ -99,9 +104,6 @@ final class CanvasStickerView: UIView {
     }
     
     private func initSubView() {
-        addSubview(topView)
-        topView.addSubview(buttonStackView)
-        
         addSubview(contentView)
         contentView.addSubview(backgroundView)
         
@@ -109,6 +111,9 @@ final class CanvasStickerView: UIView {
         phoneImageView.addSubview(cameraImageView)
         backgroundView.addSubview(stickerBorderView)
         backgroundView.addSubview(editButton)
+        
+        addSubview(topView)
+        topView.addSubview(buttonStackView)
         
         addSubview(bottomView)
         bottomView.addSubview(stickerListCollectionView)
@@ -157,10 +162,11 @@ final class CanvasStickerView: UIView {
             phoneImageView.widthAnchor.constraint(equalTo: phoneImageView.heightAnchor, multiplier: 528.0 / 1000),
             phoneImageView.heightAnchor.constraint(equalToConstant: 1000),
             
-            cameraImageView.topAnchor.constraint(equalTo: phoneImageView.topAnchor, constant: 18),
-            cameraImageView.leadingAnchor.constraint(equalTo: phoneImageView.leadingAnchor, constant: 22),
-            cameraImageView.widthAnchor.constraint(equalTo: cameraImageView.heightAnchor, multiplier: 241 / 250),
-            cameraImageView.heightAnchor.constraint(equalTo: phoneImageView.heightAnchor, multiplier: 1.1 / 4),
+            cameraImageView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            cameraImageView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
+            cameraImageView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 30),
+            cameraImageView.widthAnchor.constraint(equalTo: phoneImageView.heightAnchor, multiplier: 528.0 / 1000),
+            cameraImageView.heightAnchor.constraint(equalToConstant: 1000),
             
             bottomView.topAnchor.constraint(equalTo: backgroundView.bottomAnchor),
             bottomView.leadingAnchor.constraint(equalTo: leadingAnchor),

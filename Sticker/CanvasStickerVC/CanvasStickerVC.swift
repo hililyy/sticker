@@ -247,7 +247,7 @@ extension CanvasStickerVC {
         
         selectedSticker = nil
         
-        guard let mergedImage = mainView.backgroundView.mergeImage() else { return }
+        guard let mergedImage = mainView.backgroundView.convertToImage() else { return }
         mergedImage.saveImageAsPhoto()
         toast(message: "저장됐슴")
     }
