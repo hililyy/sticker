@@ -15,19 +15,6 @@ extension UIView {
         UIGraphicsEndImageContext()
         return image
     }
-    
-    func mask(rect: CGRect) {
-        // 1. path 인스턴스로 경로 정보 획득
-        let path = CGMutablePath()
-        path.addRect(rect)
-        
-        // 2. CAShapeLayer 인스턴스에 위 path 인스턴스 사용
-        let shapeLayer = CAShapeLayer()
-        shapeLayer.path = path
-        
-        // 3. mask에 shapeLayer 인스턴스 사용
-        layer.mask = shapeLayer
-    }
 }
 
 extension UIImage {
@@ -42,9 +29,10 @@ extension UIView {
         defer {
             UIGraphicsEndImageContext()
         }
+        
         if let context = UIGraphicsGetCurrentContext() {
             context.setFillColor(UIColor.clear.cgColor)
-            context.fill(self.bounds)
+            context.fill(bounds)
             layer.render(in: context)
             return UIGraphicsGetImageFromCurrentImageContext()
         }
@@ -55,5 +43,14 @@ extension UIView {
 extension CGRect {
     init(x: CGFloat, y: CGFloat, size: CGFloat) {
         self.init(x: x, y: y, width: size, height: size)
+    }
+}
+
+extension UIColor {
+    class var random: UIColor {
+        UIColor(red: CGFloat.random(in: 0..<1),
+                                  green: CGFloat.random(in: 0..<1),
+                                  blue: CGFloat.random(in: 0..<1),
+                                  alpha: 1)
     }
 }

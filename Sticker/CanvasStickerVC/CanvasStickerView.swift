@@ -14,7 +14,7 @@ final class CanvasStickerView: UIView {
         return view
     }()
     
-    lazy var buttonStackView: UIStackView = {
+    private lazy var buttonStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [saveButton,
                                                        selectPhotoButton,
                                                        inputTextButton,

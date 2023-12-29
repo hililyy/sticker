@@ -8,7 +8,6 @@
 import UIKit
 
 final class SimpleButton: UIButton {
-
     convenience init(name: String) {
         self.init()
         setTitle(name, for: .normal)
@@ -26,10 +25,7 @@ final class SimpleButton: UIButton {
     private func initalize() {
         titleLabel?.minimumScaleFactor = 0.5
         titleLabel?.adjustsFontSizeToFitWidth = true
-        backgroundColor = UIColor(red: CGFloat.random(in: 0..<1),
-                                  green: CGFloat.random(in: 0..<1),
-                                  blue: CGFloat.random(in: 0..<1),
-                                  alpha: 1)
+        backgroundColor = .random
         layer.cornerRadius = 5
         setTitleColor(.white, for: .normal)
     }

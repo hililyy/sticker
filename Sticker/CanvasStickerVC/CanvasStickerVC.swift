@@ -11,9 +11,9 @@ final class CanvasStickerVC: StickerBaseVC {
     
     let mainView = CanvasStickerView()
     private let imageViewStrings = ["birthday", "cake", "cat", "cow", "dog", "pie", "rabbit"]
-    var info = StickerTextModel()
+    private var info = StickerTextModel()
     
-    var selectedSticker: StickerView? {
+    private var selectedSticker: StickerView? {
         didSet {
             resetSelectedStickerUI(selectedSticker: selectedSticker)
             mainView.phoneImageView.bringSubviewToFront(mainView.stickerBorderView)
@@ -212,7 +212,7 @@ extension CanvasStickerVC {
         selectedSticker?.rotateAndResize(recognizer)
     }
     
-    @objc func rotation(_ recognizer: UIRotationGestureRecognizer) {
+    @objc private func rotation(_ recognizer: UIRotationGestureRecognizer) {
         selectedSticker?.rotation(recognizer)
     }
     
@@ -252,7 +252,7 @@ extension CanvasStickerVC {
         toast(message: "저장됐슴")
     }
     
-    @objc func openTextField() {
+    @objc private func openTextField() {
         let vc = TextFieldPopupVC()
         vc.modalTransitionStyle = .crossDissolve
         vc.modalPresentationStyle = .overFullScreen
@@ -274,7 +274,7 @@ extension CanvasStickerVC {
         present(vc, animated: true)
     }
     
-    @objc func editTextField() {
+    @objc private func editTextField() {
         let vc = TextFieldPopupVC()
         vc.modalTransitionStyle = .crossDissolve
         vc.modalPresentationStyle = .overFullScreen
@@ -286,6 +286,7 @@ extension CanvasStickerVC {
         vc.completeHandler = { [weak self] text in
             guard let self,
                   let selectedSticker else { return }
+            
             selectedSticker.removeFromSuperview()
             let largeLabel = self.getLabelbyFont(text: text, fontSize: 500)
             

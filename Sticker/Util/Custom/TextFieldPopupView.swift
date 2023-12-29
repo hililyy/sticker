@@ -13,7 +13,7 @@ final class TextFieldPopupView: UIView {
     
     private let backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        view.backgroundColor = UIColor(white: 0, alpha: 0.5)
         return view
     }()
     
@@ -46,15 +46,16 @@ final class TextFieldPopupView: UIView {
     let completeButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("추가", for: .normal)
-        button.setTitleColor(.lightGray, for: .normal)
+        button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 15)
         button.layer.cornerRadius = 10
+        button.backgroundColor = .random
         return button
     }()
     
     // MARK: - Functions
     
-    func setCompleteButtonEnable(_ isEnabled: Bool) {
+    private func setCompleteButtonEnable(_ isEnabled: Bool) {
         completeButton.isEnabled = isEnabled
     }
     
@@ -70,7 +71,7 @@ final class TextFieldPopupView: UIView {
     
     // MARK: - Constraint
     
-    func initSubviews() {
+    private func initSubviews() {
         addSubview(backgroundView)
         addSubview(backgroundButton)
         addSubview(containerView)
@@ -78,7 +79,7 @@ final class TextFieldPopupView: UIView {
         containerView.addSubview(completeButton)
     }
     
-    func initConstraints() {
+    private func initConstraints() {
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         backgroundButton.translatesAutoresizingMaskIntoConstraints = false
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -109,7 +110,7 @@ final class TextFieldPopupView: UIView {
             completeButton.leadingAnchor.constraint(equalTo: contentsTextView.leadingAnchor),
             completeButton.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -25),
             completeButton.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            completeButton.heightAnchor.constraint(equalToConstant: 45),
+            completeButton.heightAnchor.constraint(equalToConstant: 45)
         ])
     }
 }

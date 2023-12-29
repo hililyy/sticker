@@ -87,10 +87,12 @@ extension StickerView {
         stickerInfo.lastPosition = CGPoint(x: (recognizer.view?.center.x ?? 0) + translation.x,
                                            y: (recognizer.view?.center.y ?? 0) + translation.y)
         recognizer.setTranslation(.zero, in: self)
+        
         delegate?.selectSticker(stickerView: self)
         delegate?.setBorderViewPosition(frame: frame,
                                         bounds: bounds)
         delegate?.setBorderViewRotation(angle: stickerInfo.lastRotationAngle)
+        
         if type == .label {
             stickerInfo.lastPosition = self.center
             delegate?.tapLabelSticker(info: stickerInfo)
@@ -110,7 +112,6 @@ extension StickerView {
         case .changed:
             changeRotate(touchLocation: touchLocation, center: center)
             scale = changeResize(touchLocation: touchLocation, center: center)
-            
             setNeedsDisplay()
             
         case .ended:
@@ -161,7 +162,6 @@ extension StickerView {
         case .ended:
             let lastScale = stickerInfo.lastScale
             stickerInfo.lastScale = lastScale == 0 ? scale : lastScale * scale
-            
             sendLabelInfoToVC()
             
         default:
@@ -188,6 +188,7 @@ extension StickerView {
         let angle = atan2f(Float(touchLocation.y - center.y),
                            Float(touchLocation.x - center.x))
         let angleDiff = Float(deltaAngle) - angle // 초기 각도와 현재 각도의 차이 계산
+        
         stickerInfo.lastRotationAngle = CGFloat(angleDiff)
         transform = CGAffineTransform(rotationAngle: CGFloat(-angleDiff))
         delegate?.setBorderViewRotation(angle: CGFloat(angleDiff))
@@ -261,9 +262,6 @@ extension StickerView {
                        width: initImageWidth + iconButtonLength,
                        height: initImageHeight + iconButtonLength)
         
-        delegate?.setBorderViewPosition(frame: frame,
-                                        bounds: bounds)
-        
         if stickerInfo.isEdit {
             center = stickerInfo.lastPosition
             transform = CGAffineTransform(rotationAngle: CGFloat(-stickerInfo.lastRotationAngle))
@@ -277,6 +275,9 @@ extension StickerView {
             
             delegate?.setBorderViewRotation(angle: stickerInfo.lastRotationAngle)
             bounds = scaledBounds
+        } else {
+            delegate?.setBorderViewPosition(frame: frame,
+                                            bounds: bounds)
         }
     }
 }

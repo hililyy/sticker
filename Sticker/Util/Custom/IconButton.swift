@@ -8,7 +8,7 @@
 import UIKit
 
 final class IconButton: UIButton {
-    let iconImageView = UIImageView()
+    private let iconImageView = UIImageView()
 
     convenience init(iconName: String) {
         self.init()

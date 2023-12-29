@@ -7,12 +7,12 @@
 
 import UIKit
 
-class StickerBorderView: UIView {
+final class StickerBorderView: UIView {
     
     weak var parentVC: UIViewController?
     var delegate: StickerBorderDelegate?
     
-    var contentBorderView: UIView = {
+    private var contentBorderView: UIView = {
         let view = UIView()
         view.layer.borderWidth = 3
         view.layer.borderColor = UIColor.white.cgColor
@@ -25,7 +25,7 @@ class StickerBorderView: UIView {
     var bottomLeftButton = IconButton(iconName: "icArrowLeftBottom")
     var rotationButton = IconButton(iconName: "icRotate")
     
-    let iconButtonLength: CGFloat = 48
+    private let iconButtonLength: CGFloat = 48
     
     override init(frame: CGRect) {
         super.init(frame: frame)
