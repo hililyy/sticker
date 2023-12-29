@@ -19,7 +19,6 @@ final class StickerListCVCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         initSubviews()
         initConstraints()
     }

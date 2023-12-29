@@ -48,7 +48,6 @@ final class TextFieldPopupView: UIView {
         button.setTitle("추가", for: .normal)
         button.setTitleColor(.lightGray, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 15)
-        button.backgroundColor = .yellow
         button.layer.cornerRadius = 10
         return button
     }()

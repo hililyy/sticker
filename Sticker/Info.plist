@@ -4,8 +4,7 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
-		<string>qweasdzxc.ttf</string>
-		<string>haru.ttf</string>
+		<string>font.ttf</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string></string>

@@ -10,7 +10,6 @@ import Photos
 
 class StickerBaseVC: UIViewController {
     let imagePicker = UIImagePickerController()
-    
 }
 
 // MARK: - Animation

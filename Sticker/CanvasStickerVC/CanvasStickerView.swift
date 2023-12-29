@@ -8,82 +8,10 @@
 import UIKit
 
 final class CanvasStickerView: UIView {
-    
-    let saveButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("저장", for: .normal)
-        button.backgroundColor = .lightGray
-        button.layer.cornerRadius = 5
-        button.setTitleColor(.darkGray, for: .normal)
-        return button
-    }()
-    
-    let selectPhotoButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("사진 선택", for: .normal)
-        button.titleLabel?.minimumScaleFactor = 0.5
-        button.titleLabel?.adjustsFontSizeToFitWidth = true
-        button.backgroundColor = .systemIndigo
-        button.layer.cornerRadius = 5
-        button.setTitleColor(.white, for: .normal)
-        return button
-    }()
-    
-    let inputTextButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("텍스트", for: .normal)
-        button.titleLabel?.minimumScaleFactor = 0.5
-        button.titleLabel?.adjustsFontSizeToFitWidth = true
-        button.backgroundColor = .purple
-        button.layer.cornerRadius = 5
-        button.setTitleColor(.white, for: .normal)
-        return button
-    }()
-    
-    let frontLayerButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("앞", for: .normal)
-        button.backgroundColor = .yellow
-        button.layer.cornerRadius = 5
-        button.setTitleColor(.darkGray, for: .normal)
-        return button
-    }()
-    
-    let backLayerButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("뒤", for: .normal)
-        button.backgroundColor = .systemTeal
-        button.layer.cornerRadius = 5
-        button.setTitleColor(.white, for: .normal)
-        return button
-    }()
-    
-    let topLayerButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("젤앞", for: .normal)
-        button.backgroundColor = .systemPink
-        button.layer.cornerRadius = 5
-        button.setTitleColor(.white, for: .normal)
-        return button
-    }()
-    
-    let bottomLayerButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("젤뒤", for: .normal)
-        button.backgroundColor = .systemGreen
-        button.layer.cornerRadius = 5
-        button.setTitleColor(.white, for: .normal)
-        return button
-    }()
-    
-    let editButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("편집", for: .normal)
-        button.backgroundColor = .orange
-        button.layer.cornerRadius = 5
-        button.setTitleColor(.white, for: .normal)
-        button.isHidden = true
-        return button
+    private var topView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        return view
     }()
     
     lazy var buttonStackView: UIStackView = {
@@ -101,34 +29,55 @@ final class CanvasStickerView: UIView {
         return stackView
     }()
     
+    let saveButton = SimpleButton(name: "저장")
+    let selectPhotoButton = SimpleButton(name: "사진선택")
+    let inputTextButton = SimpleButton(name: "텍스트")
+    let frontLayerButton = SimpleButton(name: "앞")
+    let backLayerButton = SimpleButton(name: "뒤")
+    let topLayerButton = SimpleButton(name: "젤앞")
+    let bottomLayerButton = SimpleButton(name: "젤뒤")
+    let editButton = SimpleButton(name: "편집")
+    
     private let contentView = UIView()
     
-    let backgroundImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "image"))
-        imageView.isUserInteractionEnabled = true
-        return imageView
-    }()
-    
-    private var bottomView = UIView()
-    
-    lazy var stickerListCollectionView: UICollectionView = {
-        let view = UICollectionView(frame: .zero, collectionViewLayout: self.flowLayout)
-        view.isScrollEnabled = true
-        view.showsHorizontalScrollIndicator = false
-        view.showsVerticalScrollIndicator = true
-        view.contentInset = .zero
-        view.backgroundColor = .clear
-        view.clipsToBounds = true
-        view.register(StickerListCVCell.self, forCellWithReuseIdentifier: StickerListCVCell.identifier)
+    let backgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .lightGray
         return view
     }()
     
-    private let flowLayout: UICollectionViewFlowLayout = {
+    let phoneImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "phone"))
+        imageView.isUserInteractionEnabled = true
+        imageView.layer.cornerRadius = 40
+        return imageView
+    }()
+    
+    let cameraImageView = UIImageView(image: UIImage(named: "camera"))
+    
+    var stickerBorderView = StickerBorderView()
+    
+    private var bottomView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        return view
+    }()
+    
+    lazy var stickerListCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 8.0
         layout.itemSize = CGSize(width: 80, height: 80)
-        return layout
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.isScrollEnabled = true
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = true
+        collectionView.contentInset = .zero
+        collectionView.backgroundColor = .clear
+        collectionView.clipsToBounds = true
+        collectionView.register(StickerListCVCell.self, forCellWithReuseIdentifier: StickerListCVCell.identifier)
+        return collectionView
     }()
     
     override init(frame: CGRect) {
@@ -145,56 +94,84 @@ final class CanvasStickerView: UIView {
     
     private func initUI() {
         backgroundColor = .white
+        
+        editButton.isHidden = true
     }
     
     private func initSubView() {
-        addSubview(buttonStackView)
+        addSubview(topView)
+        topView.addSubview(buttonStackView)
+        
         addSubview(contentView)
-        contentView.addSubview(backgroundImageView)
-        backgroundImageView.addSubview(editButton)
+        contentView.addSubview(backgroundView)
+        
+        backgroundView.addSubview(phoneImageView)
+        phoneImageView.addSubview(cameraImageView)
+        backgroundView.addSubview(stickerBorderView)
+        backgroundView.addSubview(editButton)
+        
         addSubview(bottomView)
         bottomView.addSubview(stickerListCollectionView)
     }
     
     private func initConstraints() {
+        topView.translatesAutoresizingMaskIntoConstraints = false
         buttonStackView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        backgroundImageView.translatesAutoresizingMaskIntoConstraints = false
         editButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        phoneImageView.translatesAutoresizingMaskIntoConstraints = false
+        cameraImageView.translatesAutoresizingMaskIntoConstraints = false
         bottomView.translatesAutoresizingMaskIntoConstraints = false
         stickerListCollectionView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
+            topView.topAnchor.constraint(equalTo: topAnchor),
+            topView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            topView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            topView.bottomAnchor.constraint(equalTo: contentView.topAnchor),
+            
             buttonStackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 10),
-            buttonStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            buttonStackView.bottomAnchor.constraint(equalTo: contentView.topAnchor, constant: -20),
-            buttonStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            buttonStackView.leadingAnchor.constraint(equalTo: topView.leadingAnchor, constant: 10),
+            buttonStackView.trailingAnchor.constraint(equalTo: topView.trailingAnchor, constant: -10),
+            buttonStackView.bottomAnchor.constraint(equalTo: topView.bottomAnchor, constant: -20),
             buttonStackView.heightAnchor.constraint(equalToConstant: 40),
+            
+            editButton.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 20),
+            editButton.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -20),
+            editButton.widthAnchor.constraint(equalToConstant: 60),
+            editButton.heightAnchor.constraint(equalToConstant: 40),
             
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: stickerListCollectionView.topAnchor),
             
-            backgroundImageView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            backgroundImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            backgroundImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            backgroundImageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            backgroundView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            editButton.topAnchor.constraint(equalTo: backgroundImageView.topAnchor, constant: 20),
-            editButton.trailingAnchor.constraint(equalTo: backgroundImageView.trailingAnchor, constant: -20),
-            editButton.widthAnchor.constraint(equalToConstant: 60),
-            editButton.heightAnchor.constraint(equalToConstant: 40),
+            phoneImageView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor),
+            phoneImageView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor),
+            phoneImageView.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 30),
+            phoneImageView.widthAnchor.constraint(equalTo: phoneImageView.heightAnchor, multiplier: 528.0 / 1000),
+            phoneImageView.heightAnchor.constraint(equalToConstant: 1000),
             
-            bottomView.topAnchor.constraint(equalTo: backgroundImageView.bottomAnchor),
+            cameraImageView.topAnchor.constraint(equalTo: phoneImageView.topAnchor, constant: 18),
+            cameraImageView.leadingAnchor.constraint(equalTo: phoneImageView.leadingAnchor, constant: 22),
+            cameraImageView.widthAnchor.constraint(equalTo: cameraImageView.heightAnchor, multiplier: 241 / 250),
+            cameraImageView.heightAnchor.constraint(equalTo: phoneImageView.heightAnchor, multiplier: 1.1 / 4),
+            
+            bottomView.topAnchor.constraint(equalTo: backgroundView.bottomAnchor),
             bottomView.leadingAnchor.constraint(equalTo: leadingAnchor),
             bottomView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            bottomView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            bottomView.bottomAnchor.constraint(equalTo: bottomAnchor),
             bottomView.heightAnchor.constraint(equalToConstant: 100),
             
             stickerListCollectionView.topAnchor.constraint(equalTo: bottomView.topAnchor),
             stickerListCollectionView.leadingAnchor.constraint(equalTo: bottomView.leadingAnchor),
             stickerListCollectionView.trailingAnchor.constraint(equalTo: bottomView.trailingAnchor),
-            stickerListCollectionView.bottomAnchor.constraint(equalTo: bottomView.bottomAnchor)
+            stickerListCollectionView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 }

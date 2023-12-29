@@ -10,12 +10,14 @@ import UIKit
 final class CanvasStickerVC: StickerBaseVC {
     
     let mainView = CanvasStickerView()
-    
     private let imageViewStrings = ["birthday", "cake", "cat", "cow", "dog", "pie", "rabbit"]
+    var info = StickerTextModel()
     
     var selectedSticker: StickerView? {
         didSet {
             resetSelectedStickerUI(selectedSticker: selectedSticker)
+            mainView.phoneImageView.bringSubviewToFront(mainView.stickerBorderView)
+            mainView.phoneImageView.bringSubviewToFront(mainView.cameraImageView)
         }
     }
     
@@ -26,29 +28,36 @@ final class CanvasStickerVC: StickerBaseVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        mainView.phoneImageView.clipsToBounds = true
+        mainView.stickerBorderView.clipsToBounds = false
         initalize()
     }
     
-    var info = StickerTextModel()
-    
     private func resetSelectedStickerUI(selectedSticker: StickerView?) {
-        for view in mainView.backgroundImageView.subviews {
-            if let sticker = view as? StickerView {
-                sticker.isHiddenBorderView(isSelected: view == selectedSticker)
-                mainView.editButton.isHidden = selectedSticker?.type != .label
-            } else {
-                mainView.editButton.isHidden = true
-            }
+        var isStickerFound = false
+        
+        for subiew in mainView.phoneImageView.subviews where subiew == selectedSticker {
+            isStickerFound = true
+            break
         }
+        
+        if !isStickerFound {
+            clearStickerInfo()
+        }
+        
+        mainView.stickerBorderView.isHidden = !isStickerFound
+        mainView.editButton.isHidden = !isStickerFound || (isStickerFound && selectedSticker?.type == .image)
     }
     
     private func addStickerView(contentView: UIView, type: StickerType, size: CGSize? = nil) {
+        setBorderViewRotation(angle: 0)
         
         let stickerView = StickerView(contentsView: contentView)
-        var newSize: CGSize = size ?? .zero
+        var newSize = size ?? .zero
         
         if type == .image {
             newSize = getNewSize(size: contentView.frame.size)
+            initAnimation(view: stickerView)
         }
         
         stickerView.type = type
@@ -59,14 +68,11 @@ final class CanvasStickerVC: StickerBaseVC {
         stickerView.delegate = self
         stickerView.stickerInfo = info
         
-        mainView.backgroundImageView.addSubview(stickerView)
+        mainView.phoneImageView.addSubview(stickerView)
         
-        if stickerView.type == .image {
-            initAnimation(view: stickerView)
-        }
-        
-        stickerView.initFrame()
         selectedSticker = stickerView
+        stickerView.initFrame()
+        mainView.phoneImageView.bringSubviewToFront(mainView.stickerBorderView)
     }
     
     private func getNewSize(size: CGSize) -> CGSize {
@@ -105,11 +111,38 @@ extension CanvasStickerVC: StickerDelegate {
             clearStickerInfo()
         }
     }
+    
+    func setBorderViewPosition(frame: CGRect, bounds: CGRect) {
+        let convertFrame = mainView.phoneImageView.convert(frame, to: mainView.backgroundView)
+        mainView.stickerBorderView.frame = convertFrame
+        mainView.stickerBorderView.bounds.size = bounds.size
+        mainView.backgroundView.bringSubviewToFront(mainView.stickerBorderView)
+    }
+    
+    func setBorderViewRotation(angle: CGFloat) {
+        mainView.stickerBorderView.transform = CGAffineTransform(rotationAngle: -angle)
+    }
+}
+
+extension CanvasStickerVC: StickerBorderDelegate {
+    func setStickerViewPosition(center: CGPoint) {
+        guard let stickerSuperView = selectedSticker?.superview,
+              let borderSuperView = mainView.stickerBorderView.superview else { return }
+        
+        let newCenter = borderSuperView.convert(center, to: stickerSuperView)
+
+        selectedSticker?.center = newCenter
+        selectedSticker?.stickerInfo.lastPosition = newCenter
+        mainView.stickerBorderView.center = center
+    }
 }
 
 // MARK: - Initalize
 extension CanvasStickerVC {
     private func initalize() {
+        mainView.stickerBorderView.parentVC = self
+        mainView.stickerBorderView.isHidden = true
+        
         initTarget()
         initDelegate()
         initGesture()
@@ -129,27 +162,37 @@ extension CanvasStickerVC {
                                            for: .touchUpInside)
         
         mainView.frontLayerButton.addTarget(self,
-                                          action: #selector(movefrontLayer),
-                                          for: .touchUpInside)
+                                            action: #selector(movefrontLayer),
+                                            for: .touchUpInside)
         
         mainView.backLayerButton.addTarget(self,
-                                          action: #selector(movebackLayer),
-                                          for: .touchUpInside)
+                                           action: #selector(movebackLayer),
+                                           for: .touchUpInside)
         
         mainView.topLayerButton.addTarget(self,
                                           action: #selector(moveTopLayer),
                                           for: .touchUpInside)
         
         mainView.bottomLayerButton.addTarget(self,
-                                          action: #selector(moveBottomLayer),
-                                          for: .touchUpInside)
+                                             action: #selector(moveBottomLayer),
+                                             for: .touchUpInside)
         
         mainView.editButton.addTarget(self,
                                       action: #selector(editTextField),
                                       for: .touchUpInside)
+        
+        mainView.stickerBorderView.deleteButton.addTarget(self,
+                                                          action: #selector(deleteImage),
+                                                          for: .touchUpInside)
+    }
+    
+    @objc private func deleteImage() {
+        selectedSticker?.removeFromSuperview()
+        selectedSticker = nil
     }
     
     private func initDelegate() {
+        mainView.stickerBorderView.delegate = self
         mainView.stickerListCollectionView.delegate = self
         mainView.stickerListCollectionView.dataSource = self
         imagePicker.delegate = self
@@ -158,13 +201,35 @@ extension CanvasStickerVC {
     private func initGesture() {
         let tapGesture = UITapGestureRecognizer(target: self,
                                                 action: #selector(tap(_:)))
-        mainView.backgroundImageView.addGestureRecognizer(tapGesture)
+        mainView.backgroundView.addGestureRecognizer(tapGesture)
+        addPanGesture(mainView.stickerBorderView.rotateAndResizeButton, action: #selector(rotateAndResize))
+        addPanGesture(mainView.stickerBorderView.rotationButton, action: #selector(rotation))
+        addPanGesture(mainView.stickerBorderView.topLeftButton, action: #selector(resize))
+        addPanGesture(mainView.stickerBorderView.bottomLeftButton, action: #selector(resize))
+    }
+    
+    @objc private func rotateAndResize(_ recognizer: UIPanGestureRecognizer) {
+        selectedSticker?.rotateAndResize(recognizer)
+    }
+    
+    @objc func rotation(_ recognizer: UIRotationGestureRecognizer) {
+        selectedSticker?.rotation(recognizer)
+    }
+    
+    @objc private func resize(_ recognizer: UIPanGestureRecognizer) {
+        selectedSticker?.resize(recognizer)
+    }
+    
+    private func addPanGesture(_ view: UIView, action: Selector) {
+        let gesture = UIPanGestureRecognizer(target: self,
+                                             action: action)
+        view.addGestureRecognizer(gesture)
     }
     
     @objc private func tap(_ sender: UITapGestureRecognizer) {
         let location = sender.location(in: view)
         
-        for view in mainView.backgroundImageView.subviews {
+        for view in mainView.phoneImageView.subviews {
             if !view.frame.contains(location) {
                 selectedSticker = nil
             }
@@ -175,14 +240,14 @@ extension CanvasStickerVC {
 // MARK: - Target Function
 extension CanvasStickerVC {
     @objc private func saveImage() {
-        if mainView.backgroundImageView.subviews.count <= 0 {
+        if mainView.backgroundView.subviews.count <= 0 {
             toast(message: "붙은 스티커 없음")
             return
         }
         
         selectedSticker = nil
         
-        guard let mergedImage = mainView.backgroundImageView.mergeImage() else { return }
+        guard let mergedImage = mainView.backgroundView.mergeImage() else { return }
         mergedImage.saveImageAsPhoto()
         toast(message: "저장됐슴")
     }
@@ -195,10 +260,10 @@ extension CanvasStickerVC {
             guard let self else { return }
             
             let largeLabel = self.getLabelbyFont(text: text, fontSize: 500)
-            
             let smallRect = CGSize(width: largeLabel.bounds.width * 0.1,
                                    height: largeLabel.bounds.height * 0.1)
             let labelImage = UIImageView(image: largeLabel.convertToImage())
+            
             info.text = text
             clearStickerInfo()
             addStickerView(contentView: labelImage,
@@ -213,13 +278,14 @@ extension CanvasStickerVC {
         let vc = TextFieldPopupVC()
         vc.modalTransitionStyle = .crossDissolve
         vc.modalPresentationStyle = .overFullScreen
+        
         if !info.text.isEmpty {
             vc.textFieldPopupView.contentsTextView.text = info.text
         }
         
         vc.completeHandler = { [weak self] text in
-            guard let self else { return }
-            guard let selectedSticker else { return }
+            guard let self,
+                  let selectedSticker else { return }
             selectedSticker.removeFromSuperview()
             let largeLabel = self.getLabelbyFont(text: text, fontSize: 500)
             
@@ -251,6 +317,8 @@ extension CanvasStickerVC {
                 sticker.superview?.insertSubview(sticker, at: index + 1)
             }
         }
+        
+        mainView.phoneImageView.bringSubviewToFront(mainView.cameraImageView)
     }
     
     @objc private func movebackLayer() {
@@ -265,6 +333,8 @@ extension CanvasStickerVC {
         if let sticker = selectedSticker {
             sticker.superview?.bringSubviewToFront(sticker)
         }
+        
+        mainView.phoneImageView.bringSubviewToFront(mainView.cameraImageView)
     }
     
     @objc private func moveBottomLayer() {

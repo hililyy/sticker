@@ -7,7 +7,7 @@
 
 import UIKit
 
-extension UIImageView {
+extension UIView {
     func mergeImage() -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(self.frame.size, false, 0.0)
         self.superview!.layer.render(in: UIGraphicsGetCurrentContext()!)
@@ -15,8 +15,20 @@ extension UIImageView {
         UIGraphicsEndImageContext()
         return image
     }
+    
+    func mask(rect: CGRect) {
+        // 1. path 인스턴스로 경로 정보 획득
+        let path = CGMutablePath()
+        path.addRect(rect)
+        
+        // 2. CAShapeLayer 인스턴스에 위 path 인스턴스 사용
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.path = path
+        
+        // 3. mask에 shapeLayer 인스턴스 사용
+        layer.mask = shapeLayer
+    }
 }
-
 
 extension UIImage {
     func saveImageAsPhoto() {
